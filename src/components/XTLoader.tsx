@@ -175,14 +175,14 @@ export function XTLoader({ onDone }: { onDone: () => void }) {
 
       // particles assembling XT
       const assemble = Math.min(1, Math.max(0, (el - 0.6) / 3.6));
-      const scale = Math.min(W, H) / 620;
+      const scale = Math.max(0.55, Math.min(W, H * 0.7) / 620);
       ctx.save();
       ctx.translate(cx, cy);
       ctx.shadowBlur = 10;
       particles.forEach((p) => {
         const ease = assemble * assemble * (3 - 2 * assemble);
-        p.x += (p.tx * scale * 1.6 - p.x) * 0.045 * (0.2 + ease);
-        p.y += (p.ty * scale * 1.6 - p.y) * 0.045 * (0.2 + ease);
+        p.x += (p.tx * scale * 1.7 - p.x) * (0.05 + 0.1 * ease);
+        p.y += (p.ty * scale * 1.7 - p.y) * (0.05 + 0.1 * ease);
         const jitter = (1 - ease) * 4;
         ctx.fillStyle = `hsla(${p.hue}, 100%, ${60 + ease * 20}%, ${0.35 + ease * 0.6})`;
         ctx.shadowColor = `hsla(${p.hue},100%,65%,0.9)`;
@@ -190,7 +190,7 @@ export function XTLoader({ onDone }: { onDone: () => void }) {
         ctx.arc(
           p.x + Math.sin(el * 3 + p.a * 9) * jitter,
           p.y + Math.cos(el * 2.4 + p.a * 7) * jitter,
-          p.r + ease * 0.4,
+          p.r * 1.5 + ease * 0.9,
           0,
           Math.PI * 2,
         );
@@ -263,7 +263,7 @@ export function XTLoader({ onDone }: { onDone: () => void }) {
           <div>NETWORK CONNECTED</div>
           <div>CORE TEMP 42°C</div>
         </div>
-        <div className="absolute bottom-16 left-1/2 w-full max-w-md -translate-x-1/2 space-y-1 px-5 text-center normal-case tracking-normal text-primary/60">
+        <div className="absolute bottom-24 left-1/2 w-full max-w-md -translate-x-1/2 space-y-1 px-5 text-center normal-case tracking-normal text-primary/60">
           {lines.map((l, i) => (
             <div key={`${l}-${i}`} style={{ opacity: 0.25 + i * 0.11 }}>
               &gt; {l}

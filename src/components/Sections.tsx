@@ -58,7 +58,7 @@ export function Hero() {
             Developer <span className="text-violet">•</span> Creator{" "}
             <span className="text-violet">•</span> Problem Solver
           </p>
-          <div className="mt-4 h-px w-72 max-w-full bg-[var(--gradient-brand)]" />
+          <div className="mt-4 h-px w-72 max-w-full rule-brand" />
           <p className="mt-6 max-w-lg border-l-2 border-primary pl-4 text-lg text-muted-foreground">
             Passionate about building modern, interactive and user-friendly digital experiences with{" "}
             <span className="text-cyan">clean code</span> and{" "}
@@ -67,7 +67,7 @@ export function Hero() {
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href="#contact"
-              className="rounded-md bg-[var(--gradient-brand)] px-6 py-3 font-mono text-xs uppercase tracking-[0.2em] text-primary-foreground glow"
+              className="rounded-md btn-brand px-6 py-3 font-mono text-xs uppercase tracking-[0.2em]"
             >
               Let&apos;s Build
             </a>
@@ -131,7 +131,7 @@ const STACK = [
 export function Stack() {
   return (
     <section id="stack" className="mx-auto max-w-6xl px-5 py-16">
-      <SectionTitle kicker="🧠 Stack (Focused)" title="TECH STACK" />
+      <SectionTitle kicker="// stack (focused)" title="TECH STACK" />
       <div className="panel mt-8 grid grid-cols-2 gap-px overflow-hidden bg-border/40 sm:grid-cols-3 lg:grid-cols-5">
         {STACK.map((t) => (
           <div
@@ -170,7 +170,7 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
     <div>
       <p className="font-mono text-xs uppercase tracking-[0.4em] text-muted-foreground">{kicker}</p>
       <h2 className="mt-2 font-display text-3xl text-gradient sm:text-4xl">{title}</h2>
-      <div className="mt-3 h-px w-24 bg-[var(--gradient-brand)]" />
+      <div className="mt-3 h-px w-24 rule-brand" />
     </div>
   );
 }
@@ -178,7 +178,7 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
 export function Identity() {
   return (
     <section id="identity" className="mx-auto max-w-6xl px-5 py-16">
-      <SectionTitle kicker="🧠 Identity" title="NOT WEBSITES — EXPERIENCES" />
+      <SectionTitle kicker="// identity" title="NOT WEBSITES — EXPERIENCES" />
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         {[
           ["Experiences that hold attention", "I don't build \"websites\". I build interfaces people remember."],
@@ -213,13 +213,13 @@ export function Identity() {
 export function Work() {
   const items = [
     {
-      t: "⚡ UI Experiment",
+      t: "UI Experiment",
       q: "Built to hook attention instantly",
       d: "Motion-driven interface studies exploring depth, particles and micro-interaction timing.",
       tags: ["JavaScript", "Canvas", "Motion"],
     },
     {
-      t: "⚡ Landing Experience",
+      t: "Landing Experience",
       q: "Smooth. Fast. Designed to convert",
       d: "A high-performance landing system with cinematic scroll choreography and tight typography.",
       tags: ["HTML", "CSS", "UX"],
@@ -227,7 +227,7 @@ export function Work() {
   ];
   return (
     <section id="work" className="mx-auto max-w-6xl px-5 py-16">
-      <SectionTitle kicker="🚀 Selected Work" title="PROJECTS" />
+      <SectionTitle kicker="// selected work" title="PROJECTS" />
       <div className="mt-8 grid gap-6 md:grid-cols-2">
         {items.map((p) => (
           <article key={p.t} className="panel group overflow-hidden">
@@ -259,7 +259,7 @@ export function Work() {
       </div>
 
       <div className="panel mt-8 p-6">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-cyan">⚡ Current Direction</p>
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-cyan">// current direction</p>
         <ul className="mt-4 grid gap-2 text-muted-foreground sm:grid-cols-3">
           <li>› Advanced UI animation systems</li>
           <li>› Portfolio-grade projects</li>
@@ -273,7 +273,7 @@ export function Work() {
 export function Proof() {
   return (
     <section id="proof" className="mx-auto max-w-6xl px-5 py-16">
-      <SectionTitle kicker="📊 Proof" title="GITHUB ACTIVITY" />
+      <SectionTitle kicker="// proof" title="GITHUB ACTIVITY" />
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="panel overflow-hidden p-4">
           <img
@@ -319,7 +319,7 @@ export function Contact() {
   ];
   return (
     <section id="contact" className="relative mx-auto max-w-6xl px-5 py-20">
-      <SectionTitle kicker="📫 Contact" title="LET'S BUILD SOMETHING AMAZING" />
+      <SectionTitle kicker="// contact" title="LET'S BUILD SOMETHING AMAZING" />
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {links.map(([k, v, href]) => (
           <a
