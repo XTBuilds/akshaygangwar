@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from "react";
 
 const BOOT_LINES = [
   "INITIALIZING XT CORE",
+  "LOADING DIGITAL ENVIRONMENT",
   "COMPILING MODULE 07",
-  "BUILD PROCESS STARTED",
-  "OPTIMIZING SYSTEM",
-  "NEURAL INTERFACE READY",
-  "CORE SYNCHRONIZED",
-  "BUILD SUCCESS",
+  "OPTIMIZING INTERFACE",
+  "CONNECTING TO GITHUB",
+  "AUTHENTICATING AKSHAYXT",
+  "FETCHING PUBLIC REPOSITORIES",
 ];
 
 type Particle = {
@@ -20,37 +20,50 @@ type Particle = {
   hue: number;
 };
 
-export function XTLoader({ onDone }: { onDone: () => void }) {
+export function XTLoader({
+  onDone,
+  statusLines = [],
+  ready = true,
+}: {
+  onDone: () => void;
+  statusLines?: string[];
+  ready?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [progress, setProgress] = useState(0);
   const [lines, setLines] = useState<string[]>([]);
   const [leaving, setLeaving] = useState(false);
+  const readyRef = useRef(ready);
+  readyRef.current = ready;
 
   useEffect(() => {
+    if (statusLines.length) return;
     let i = 0;
     const id = setInterval(() => {
       i += 1;
       setLines((l) => [...l, BOOT_LINES[i % BOOT_LINES.length] ?? ""].slice(-7));
     }, 420);
     return () => clearInterval(id);
-  }, []);
+  }, [statusLines.length]);
 
   useEffect(() => {
     const start = performance.now();
-    const dur = 5200;
+    const dur = 3600;
     let raf = 0;
     const tick = (t: number) => {
       const p = Math.min(1, (t - start) / dur);
-      setProgress(Math.round(p * 100));
-      if (p < 1) raf = requestAnimationFrame(tick);
+      const capped = readyRef.current ? p : Math.min(p, 0.92);
+      setProgress(Math.round(capped * 100));
+      if (capped < 1) raf = requestAnimationFrame(tick);
       else {
         setLeaving(true);
-        setTimeout(onDone, 900);
+        setTimeout(onDone, 800);
       }
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [onDone]);
+
 
   useEffect(() => {
     const canvas = canvasRef.current;
