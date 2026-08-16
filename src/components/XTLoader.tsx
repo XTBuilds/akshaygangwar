@@ -277,11 +277,12 @@ export function XTLoader({
           <div>CORE TEMP 42°C</div>
         </div>
         <div className="absolute bottom-24 left-1/2 w-full max-w-md -translate-x-1/2 space-y-1 px-5 text-center normal-case tracking-normal text-primary/60">
-          {lines.map((l, i) => (
-            <div key={`${l}-${i}`} style={{ opacity: 0.25 + i * 0.11 }}>
+          {(statusLines.length ? statusLines.slice(-7) : lines).map((l, i) => (
+            <div key={`${l}-${i}`} style={{ opacity: 0.35 + i * 0.09 }}>
               &gt; {l}
             </div>
           ))}
+
         </div>
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center sm:bottom-8">
           <div className="font-display text-2xl text-foreground">{progress}%</div>
