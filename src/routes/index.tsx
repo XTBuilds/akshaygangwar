@@ -1,24 +1,47 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { XTLoader } from "@/components/XTLoader";
+import { Nav, Hero, Identity, Work, Stack, Proof, Contact } from "@/components/Sections";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "AkshayXT — Developer, Creator, Problem Solver" },
+      {
+        name: "description",
+        content:
+          "Portfolio of Akshay Gangwar (AkshayXT): futuristic interfaces, interactive frontend systems and creative engineering with clean code.",
+      },
+      { property: "og:title", content: "AkshayXT — Developer, Creator, Problem Solver" },
+      {
+        property: "og:description",
+        content:
+          "Futuristic interfaces, interactive frontend systems and creative engineering by Akshay Gangwar.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const [booted, setBooted] = useState(false);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      {!booted && <XTLoader onDone={() => setBooted(true)} />}
+      <div className={booted ? "animate-rise" : "invisible"}>
+        <Nav />
+        <main>
+          <Hero />
+          <Identity />
+          <Work />
+          <Stack />
+          <Proof />
+          <Contact />
+        </main>
+      </div>
     </div>
   );
 }
