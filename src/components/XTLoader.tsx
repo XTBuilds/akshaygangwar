@@ -79,8 +79,8 @@ export function XTLoader({ onDone }: { onDone: () => void }) {
     const data = octx.getImageData(0, 0, off.width, off.height).data;
 
     const targets: { x: number; y: number }[] = [];
-    for (let y = 0; y < off.height; y += 3) {
-      for (let x = 0; x < off.width; x += 3) {
+    for (let y = 0; y < off.height; y += 2) {
+      for (let x = 0; x < off.width; x += 2) {
         if ((data[(y * off.width + x) * 4 + 3] ?? 0) > 128) targets.push({ x: x - 150, y: y - 70 });
       }
     }
@@ -175,14 +175,14 @@ export function XTLoader({ onDone }: { onDone: () => void }) {
 
       // particles assembling XT
       const assemble = Math.min(1, Math.max(0, (el - 0.6) / 3.6));
-      const scale = Math.max(0.55, Math.min(W, H * 0.7) / 620);
+      const scale = (R * 1.35) / 300;
       ctx.save();
       ctx.translate(cx, cy);
       ctx.shadowBlur = 10;
       particles.forEach((p) => {
         const ease = assemble * assemble * (3 - 2 * assemble);
-        p.x += (p.tx * scale * 1.7 - p.x) * (0.05 + 0.1 * ease);
-        p.y += (p.ty * scale * 1.7 - p.y) * (0.05 + 0.1 * ease);
+        p.x += (p.tx * scale - p.x) * (0.05 + 0.1 * ease);
+        p.y += (p.ty * scale - p.y) * (0.05 + 0.1 * ease);
         const jitter = (1 - ease) * 4;
         ctx.fillStyle = `hsla(${p.hue}, 100%, ${60 + ease * 20}%, ${0.35 + ease * 0.6})`;
         ctx.shadowColor = `hsla(${p.hue},100%,65%,0.9)`;
