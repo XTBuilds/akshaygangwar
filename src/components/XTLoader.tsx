@@ -30,7 +30,7 @@ export function XTLoader({ onDone }: { onDone: () => void }) {
     let i = 0;
     const id = setInterval(() => {
       i += 1;
-      setLines((l) => [...l, BOOT_LINES[i % BOOT_LINES.length]].slice(-7));
+      setLines((l) => [...l, BOOT_LINES[i % BOOT_LINES.length] ?? ""].slice(-7));
     }, 420);
     return () => clearInterval(id);
   }, []);
@@ -81,7 +81,7 @@ export function XTLoader({ onDone }: { onDone: () => void }) {
     const targets: { x: number; y: number }[] = [];
     for (let y = 0; y < off.height; y += 3) {
       for (let x = 0; x < off.width; x += 3) {
-        if (data[(y * off.width + x) * 4 + 3] > 128) targets.push({ x: x - 150, y: y - 70 });
+        if ((data[(y * off.width + x) * 4 + 3] ?? 0) > 128) targets.push({ x: x - 150, y: y - 70 });
       }
     }
 
