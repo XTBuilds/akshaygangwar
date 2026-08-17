@@ -256,7 +256,15 @@ export function CommandCenter() {
   );
 }
 
-function RepoCard({ repo }: { repo: GithubRepo }) {
+function RepoCard({
+  repo,
+  onSelect,
+  dense,
+}: {
+  repo: GithubRepo;
+  onSelect?: (r: GithubRepo) => void;
+  dense?: boolean;
+}) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
 
@@ -267,7 +275,7 @@ function RepoCard({ repo }: { repo: GithubRepo }) {
     const r = el.getBoundingClientRect();
     const rx = ((e.clientY - r.top) / r.height - 0.5) * -6;
     const ry = ((e.clientX - r.left) / r.width - 0.5) * 6;
-    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
   };
   const reset = () => {
     if (ref.current) ref.current.style.transform = "";
@@ -278,36 +286,50 @@ function RepoCard({ repo }: { repo: GithubRepo }) {
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={reset}
-      className="panel group flex flex-col p-5 transition-transform duration-200 hover:border-cyan"
+      className={`holo-panel animate-dissolve group flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        dense ? "p-4" : "p-5"
+      }`}
     >
-      <h3 className="truncate font-display text-base text-foreground" title={repo.name}>
-        {repo.name}
-      </h3>
-      <p className="mt-2 line-clamp-3 min-h-[3.5rem] text-sm text-muted-foreground">
-        {repo.description || "No description provided."}
-      </p>
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="truncate font-display text-base text-foreground" title={repo.name}>
+          {repo.name}
+        </h3>
+        <span
+          className="mt-1 h-2 w-2 shrink-0 rounded-full bg-neon animate-pulse-ring"
+          title={`Last commit ${formatDate(repo.pushed_at)}`}
+        />
+      </div>
+      {!dense && (
+        <p className="mt-2 line-clamp-3 min-h-[3.5rem] text-sm text-muted-foreground">
+          {repo.description || "No description provided."}
+        </p>
+      )}
       <div className="mt-4 flex flex-wrap gap-3 font-mono text-[11px] text-muted-foreground">
         {repo.language && <span className="text-cyan">{repo.language}</span>}
-        <span>★ {repo.stargazers_count}</span>
+        <span className="text-foreground">★ {repo.stargazers_count}</span>
         <span>⑂ {repo.forks_count}</span>
         <span>{formatDate(repo.updated_at)}</span>
       </div>
-      <div className="mt-5 flex gap-2">
+      <div className="mt-5 flex flex-wrap gap-2">
+        {onSelect && (
+          <button
+            type="button"
+            onClick={() => onSelect(repo)}
+            className="rounded-md btn-brand px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em]"
+          >
+            Open Details
+          </button>
+        )}
         <a
           href={repo.html_url}
           target="_blank"
           rel="noreferrer"
-          className="rounded-md border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-foreground transition-colors hover:border-cyan hover:text-cyan"
+          className="portal-link"
         >
           View Source
         </a>
         {repo.homepage && (
-          <a
-            href={repo.homepage}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-md btn-brand px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em]"
-          >
+          <a href={repo.homepage} target="_blank" rel="noreferrer" className="portal-link">
             Live Demo
           </a>
         )}
@@ -316,7 +338,7 @@ function RepoCard({ repo }: { repo: GithubRepo }) {
   );
 }
 
-export function FeaturedProjects() {
+export function FeaturedProjects({ onSelect }: { onSelect?: (r: GithubRepo) => void }) {
   const { data, isLoading, errorMessage } = useGithub();
   const featured = data ? featuredRepos(data.repos) : [];
   return (
@@ -331,13 +353,14 @@ export function FeaturedProjects() {
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {featured.map((r) => (
-            <RepoCard key={r.id} repo={r} />
+            <RepoCard key={r.id} repo={r} onSelect={onSelect} />
           ))}
         </div>
       )}
     </section>
   );
 }
+
 
 type Sort = "updated" | "stars" | "forks" | "az";
 
