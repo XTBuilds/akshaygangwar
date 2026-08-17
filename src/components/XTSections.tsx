@@ -262,8 +262,8 @@ function RepoCard({
   dense,
 }: {
   repo: GithubRepo;
-  onSelect?: (r: GithubRepo) => void;
-  dense?: boolean;
+  onSelect?: ((r: GithubRepo) => void) | undefined;
+  dense?: boolean | undefined;
 }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
@@ -338,7 +338,7 @@ function RepoCard({
   );
 }
 
-export function FeaturedProjects({ onSelect }: { onSelect?: (r: GithubRepo) => void }) {
+export function FeaturedProjects({ onSelect }: { onSelect?: ((r: GithubRepo) => void) | undefined }) {
   const { data, isLoading, errorMessage } = useGithub();
   const featured = data ? featuredRepos(data.repos) : [];
   return (
