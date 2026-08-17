@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { XTLoader } from "@/components/XTLoader";
+import { CosmicBackdrop } from "@/components/CosmicBackdrop";
+import { CommandOrb } from "@/components/CommandOrb";
+import { RepoDrawer } from "@/components/RepoDrawer";
+import { LifeStream } from "@/components/LifeStream";
+import type { GithubRepo } from "@/services/github";
 import { HUD } from "@/components/HUD";
 import { GithubProvider, useGithub } from "@/hooks/useGithub";
 import {
@@ -43,6 +48,9 @@ export const Route = createFileRoute("/")({
 
 function XTCore() {
   const [booted, setBooted] = useState(false);
+  const [selected, setSelected] = useState<GithubRepo | null>(null);
+  const [showFilters, setShowFilters] = useState(true);
+  const [density, setDensity] = useState<"comfortable" | "dense">("comfortable");
   const { data, isLoading, errorMessage } = useGithub();
 
   const status = [
@@ -65,7 +73,8 @@ function XTCore() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
+      <CosmicBackdrop />
       {!booted && (
         <XTLoader
           onDone={() => setBooted(true)}
@@ -78,14 +87,29 @@ function XTCore() {
         <main>
           <Hero />
           <CommandCenter />
-          <FeaturedProjects />
-          <RepositoryExplorer />
+          <FeaturedProjects onSelect={setSelected} />
+          <RepositoryExplorer
+            onSelect={setSelected}
+            showFilters={showFilters}
+            density={density}
+          />
+          <LifeStream />
           <TechnologyMatrix />
           <Activity />
           <About />
           <Contact />
         </main>
         <HUD />
+        <CommandOrb
+          onToggleFilters={() => setShowFilters((v) => !v)}
+          density={density}
+          onToggleDensity={() => setDensity((d) => (d === "dense" ? "comfortable" : "dense"))}
+        />
+        <RepoDrawer
+          repo={selected}
+          avatar={data?.profile.avatar_url}
+          onClose={() => setSelected(null)}
+        />
       </div>
     </div>
   );
