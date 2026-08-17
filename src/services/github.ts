@@ -190,7 +190,7 @@ export async function fetchRepoCommitSeries(repo: GithubRepo): Promise<CommitPoi
     const cur = buckets.get(day);
     buckets.set(day, {
       count: (cur?.count ?? 0) + 1,
-      message: cur?.message ?? c.commit.message.split("\n")[0],
+      message: cur?.message ?? c.commit.message.split("\n")[0] ?? "",
     });
   });
   return [...buckets.entries()]
