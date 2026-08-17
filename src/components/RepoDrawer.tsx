@@ -64,7 +64,7 @@ export function RepoDrawer({
   onClose,
 }: {
   repo: GithubRepo | null;
-  avatar?: string;
+  avatar?: string | undefined;
   onClose: () => void;
 }) {
   useEffect(() => {
