@@ -150,3 +150,50 @@ export function formatDate(iso: string) {
     day: "2-digit",
   });
 }
+
+export async function fetchRepoReadme(repo: GithubRepo): Promise<string> {
+  const base = `https://raw.githubusercontent.com/${repo.full_name}/${repo.default_branch}`;
+  for (const file of ["README.md", "readme.md", "Readme.md"]) {
+    try {
+      const res = await fetch(`${base}/${file}`, { cache: "no-store" });
+      if (res.ok) return await res.text();
+    } catch {
+      throw new GithubError("NETWORK", "README STREAM LOST");
+    }
+  }
+  return "";
+}
+
+export function readmeSnippet(md: string, length = 400) {
+  const text = md
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[#>*_`|-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > length ? `${text.slice(0, length)}...` : text;
+}
+
+export type CommitPoint = { date: string; count: number; message: string | null };
+
+type RawCommit = { commit: { author: { date: string } | null; message: string } };
+
+export async function fetchRepoCommitSeries(repo: GithubRepo): Promise<CommitPoint[]> {
+  const raw = await get<RawCommit[]>(`/repos/${repo.full_name}/commits?per_page=60`);
+  const buckets = new Map<string, { count: number; message: string }>();
+  raw.forEach((c) => {
+    const iso = c.commit.author?.date;
+    if (!iso) return;
+    const day = iso.slice(0, 10);
+    const cur = buckets.get(day);
+    buckets.set(day, {
+      count: (cur?.count ?? 0) + 1,
+      message: cur?.message ?? c.commit.message.split("\n")[0] ?? "",
+    });
+  });
+  return [...buckets.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([date, v]) => ({ date, count: v.count, message: v.message }));
+}
