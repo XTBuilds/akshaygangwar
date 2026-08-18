@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { ScrollVelocity } from "@/components/motion/ScrollVelocity";
+import { CustomCursor } from "@/components/motion/CustomCursor";
+import { usePointerField } from "@/hooks/usePointerField";
 import { XTLoader } from "@/components/XTLoader";
 import { CosmicBackdrop } from "@/components/CosmicBackdrop";
 import { CommandOrb } from "@/components/CommandOrb";
@@ -52,6 +56,7 @@ function XTCore() {
   const [showFilters, setShowFilters] = useState(true);
   const [density, setDensity] = useState<"comfortable" | "dense">("comfortable");
   const { data, isLoading, errorMessage } = useGithub();
+  usePointerField();
 
   const status = [
     "INITIALIZING XT CORE...",
