@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Markdown } from "@/components/Markdown";
 import {
   fetchRepoCommitSeries,
   fetchRepoReadme,
   formatDate,
-  readmeSnippet,
   type CommitPoint,
   type GithubRepo,
 } from "@/services/github";
@@ -148,14 +148,30 @@ export function RepoDrawer({
             </div>
 
             <div className="panel mt-6 p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-violet">
-                README STREAM
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-cyan/90 [text-shadow:0_0_18px_var(--cyan)]">
-                {readme.isLoading
-                  ? "DECODING README..."
-                  : readmeSnippet(readme.data ?? "") || "NO README FOUND IN THIS REPOSITORY."}
-              </p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-violet">
+                  README
+                </p>
+                <a
+                  href={`${repo.html_url}#readme`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan hover:text-violet"
+                >
+                  Open on GitHub
+                </a>
+              </div>
+              <div className="mt-3 max-h-72 space-y-3 overflow-y-auto pr-1">
+                {readme.isLoading ? (
+                  <p className="font-mono text-xs text-muted-foreground">LOADING README...</p>
+                ) : readme.data && readme.data.trim() ? (
+                  <Markdown source={readme.data.slice(0, 6000)} />
+                ) : (
+                  <p className="font-mono text-xs text-muted-foreground">
+                    NO README FOUND IN THIS REPOSITORY.
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="panel mt-4 p-4">
