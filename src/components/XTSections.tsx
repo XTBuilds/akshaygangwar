@@ -214,8 +214,6 @@ export function Hero() {
           </div>
         </Parallax>
       </div>
-
-      </div>
     </section>
   );
 }
