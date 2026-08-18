@@ -58,6 +58,14 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
 }
 
 export function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+
   const items = [
     ["Command", "#command"],
     ["Projects", "#projects"],
@@ -67,8 +75,18 @@ export function Nav() {
     ["Contact", "#contact"],
   ];
   return (
-    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <header
+      className={`sticky top-0 z-30 border-b transition-all duration-300 ${
+        scrolled
+          ? "border-cyan/25 bg-background/60 backdrop-blur-2xl shadow-[0_10px_40px_-24px_var(--cyan)]"
+          : "border-border/60 bg-background/40 backdrop-blur-xl"
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-6xl items-center justify-between px-5 transition-all duration-300 ${
+          scrolled ? "py-2.5" : "py-4"
+        }`}
+      >
         <a href="#top" className="font-display text-lg tracking-widest text-gradient">
           {PROFILE_CONFIG.brand}
         </a>
@@ -82,18 +100,19 @@ export function Nav() {
             </a>
           ))}
         </nav>
-        <a
+        <MagneticLink
           href={GH}
           target="_blank"
           rel="noreferrer"
           className="rounded-full border border-cyan/40 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-cyan transition-colors hover:bg-cyan/10"
         >
           GitHub
-        </a>
+        </MagneticLink>
       </div>
     </header>
   );
 }
+
 
 export function Hero() {
   const { data } = useGithub();
