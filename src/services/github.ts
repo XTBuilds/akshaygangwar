@@ -3,8 +3,8 @@ const API = "https://api.github.com";
 
 export const PROFILE_CONFIG = {
   name: "Akshay Gangwar",
-  handle: "@akshayxt",
-  brand: "XT",
+  handle: "IG : RAXX_XT",
+  brand: "XT BUILDS",
   role: "Creative Frontend Engineer",
   tagline:
     "Building interactive digital experiences, high-impact interfaces and futuristic web systems.",

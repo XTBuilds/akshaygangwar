@@ -70,7 +70,7 @@ export function Nav() {
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <a href="#top" className="font-display text-lg tracking-widest text-gradient">
-          XT // CORE
+          {PROFILE_CONFIG.brand}
         </a>
         <nav
           aria-label="Primary"
