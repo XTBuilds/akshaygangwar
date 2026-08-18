@@ -233,14 +233,14 @@ export function CommandCenter() {
     <section id="command" className="mx-auto max-w-6xl px-5 py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <SectionTitle kicker="// live data" title="GITHUB COMMAND CENTER" />
-        <button
+        <MagneticButton
           type="button"
           onClick={refresh}
           className="rounded-md border border-cyan/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cyan transition-colors hover:bg-cyan/10 disabled:opacity-50"
           disabled={isFetching}
         >
           {isFetching ? "Syncing..." : "Refresh GitHub"}
-        </button>
+        </MagneticButton>
       </div>
 
       <p
@@ -284,30 +284,10 @@ function RepoCard({
   onSelect?: ((r: GithubRepo) => void) | undefined;
   dense?: boolean | undefined;
 }) {
-  const reduced = useReducedMotion();
-  const ref = useRef<HTMLElement>(null);
-
-  const onMove = (e: React.MouseEvent) => {
-    if (reduced) return;
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const rx = ((e.clientY - r.top) / r.height - 0.5) * -6;
-    const ry = ((e.clientX - r.left) / r.width - 0.5) * 6;
-    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
-  };
-  const reset = () => {
-    if (ref.current) ref.current.style.transform = "";
-  };
-
   return (
-    <article
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={reset}
-      className={`holo-panel animate-dissolve group flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        dense ? "p-4" : "p-5"
-      }`}
+    <TiltCard
+      className={`holo-panel animate-dissolve group ${dense ? "p-4" : "p-5"}`}
+      {...(onSelect ? { onActivate: () => onSelect(repo) } : {})}
     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="truncate font-display text-base text-foreground" title={repo.name}>
@@ -331,20 +311,15 @@ function RepoCard({
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
         {onSelect && (
-          <button
+          <MagneticButton
             type="button"
             onClick={() => onSelect(repo)}
             className="rounded-md btn-brand px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em]"
           >
             Open Details
-          </button>
+          </MagneticButton>
         )}
-        <a
-          href={repo.html_url}
-          target="_blank"
-          rel="noreferrer"
-          className="portal-link"
-        >
+        <a href={repo.html_url} target="_blank" rel="noreferrer" className="portal-link">
           View Source
         </a>
         {repo.homepage && (
@@ -353,9 +328,10 @@ function RepoCard({
           </a>
         )}
       </div>
-    </article>
+    </TiltCard>
   );
 }
+
 
 export function FeaturedProjects({ onSelect }: { onSelect?: ((r: GithubRepo) => void) | undefined }) {
   const { data, isLoading, errorMessage } = useGithub();
