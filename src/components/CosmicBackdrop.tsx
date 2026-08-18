@@ -73,12 +73,25 @@ export function CosmicBackdrop() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <div className="absolute inset-0 bg-background" />
-      <div className="nebula-cyan absolute -left-40 top-[-10%] h-[70vh] w-[70vw] rounded-full" />
-      <div className="nebula-magenta absolute -right-40 top-[25%] h-[75vh] w-[65vw] rounded-full" />
-      <div className="nebula-deep absolute bottom-[-20%] left-[20%] h-[60vh] w-[60vw] rounded-full" />
+      <Parallax
+        depth={4}
+        className="nebula-cyan animate-drift-a absolute -left-40 top-[-10%] h-[70vh] w-[70vw] rounded-full"
+      />
+      <Parallax
+        depth={5}
+        invert
+        className="nebula-magenta animate-drift-b absolute -right-40 top-[25%] h-[75vh] w-[65vw] rounded-full"
+      />
+      <Parallax
+        depth={3}
+        className="nebula-deep animate-drift-a absolute bottom-[-20%] left-[20%] h-[60vh] w-[60vw] rounded-full"
+      />
+      <Parallax depth={3} as="canvas" className="absolute inset-0 opacity-80" />
       <canvas ref={ref} className="absolute inset-0 opacity-80" />
-      <div className="absolute inset-0 grid-bg opacity-[0.12]" />
+      <Parallax depth={2} className="absolute -inset-8 grid-bg opacity-[0.12]" />
+      <div className="pointer-glow absolute inset-0" />
       <div className="volumetric absolute inset-0" />
     </div>
   );
 }
+
