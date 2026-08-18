@@ -119,21 +119,8 @@ export function Nav() {
 
 export function Hero() {
   const { data } = useGithub();
-  const reduced = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (reduced) return;
-    const el = ref.current;
-    if (!el) return;
-    const on = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 14;
-      const y = (e.clientY / window.innerHeight - 0.5) * 14;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    };
-    window.addEventListener("mousemove", on);
-    return () => window.removeEventListener("mousemove", on);
-  }, [reduced]);
+
 
   const t = data ? totals(data.repos) : undefined;
   const stats: [string, number | undefined][] = [
