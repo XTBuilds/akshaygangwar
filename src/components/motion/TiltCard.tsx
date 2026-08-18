@@ -10,11 +10,13 @@ export function TiltCard({
   className = "",
   max = 4,
   lift = 4,
+  onActivate,
 }: {
   children: ReactNode;
   className?: string;
   max?: number;
   lift?: number;
+  onActivate?: () => void;
 }) {
   const active = useInteractive();
   const ref = useRef<HTMLElement>(null);
@@ -44,6 +46,11 @@ export function TiltCard({
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={reset}
+      {...(onActivate
+        ? {
+            onDoubleClick: onActivate,
+          }
+        : {})}
       className={`tilt-card ${className}`}
     >
       <span aria-hidden className="tilt-sheen" />
