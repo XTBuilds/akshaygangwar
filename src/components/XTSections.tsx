@@ -132,12 +132,22 @@ export function Hero() {
 
   return (
     <section id="top" className="relative overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-30" />
-      <div className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-primary/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-accent/20 blur-[130px]" />
+      <Parallax depth={3} className="absolute -inset-6 grid-bg opacity-30" aria-hidden />
+      <Parallax
+        depth={10}
+        className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-primary/20 blur-[120px]"
+        aria-hidden
+      />
+      <Parallax
+        depth={12}
+        invert
+        className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-accent/20 blur-[130px]"
+        aria-hidden
+      />
+      <div className="pointer-glow pointer-events-none absolute inset-0" aria-hidden />
 
       <div className="relative mx-auto grid max-w-6xl gap-10 px-5 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
-        <div className="animate-rise">
+        <Parallax depth={4} className="animate-rise">
           <p className="font-mono text-xs uppercase tracking-[0.45em] text-muted-foreground">
             Turning ideas into <span className="text-cyan caret">code</span>
           </p>
@@ -170,24 +180,24 @@ export function Hero() {
           </dl>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
+            <MagneticLink
               href="#projects"
               className="rounded-md btn-brand px-6 py-3 font-mono text-xs uppercase tracking-[0.2em]"
             >
               View Projects
-            </a>
-            <a
+            </MagneticLink>
+            <MagneticLink
               href={GH}
               target="_blank"
               rel="noreferrer"
               className="rounded-md border border-border px-6 py-3 font-mono text-xs uppercase tracking-[0.2em] text-foreground transition-colors hover:border-cyan hover:text-cyan"
             >
               GitHub
-            </a>
+            </MagneticLink>
           </div>
-        </div>
+        </Parallax>
 
-        <div ref={ref} className="animate-rise space-y-6 transition-transform duration-300">
+        <Parallax depth={14} className="animate-rise space-y-6">
           <div className="panel relative overflow-hidden">
             <img
               src={data?.profile.avatar_url ?? profileAsset.url}
@@ -196,13 +206,15 @@ export function Hero() {
               loading="lazy"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background to-transparent p-4">
-              <p className="font-display text-sm tracking-widest text-cyan">XT CORE</p>
+              <p className="font-display text-sm tracking-widest text-cyan">{PROFILE_CONFIG.brand}</p>
               <p className="font-mono text-xs text-muted-foreground">
                 {data?.profile.bio?.replace(/\.{2,}/g, "") || "Creative frontend engineering."}
               </p>
             </div>
           </div>
-        </div>
+        </Parallax>
+      </div>
+
       </div>
     </section>
   );
