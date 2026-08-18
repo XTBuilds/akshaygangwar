@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { MagneticButton, MagneticLink } from "@/components/motion/MagneticButton";
+import { TiltCard } from "@/components/motion/TiltCard";
+import { Parallax } from "@/components/motion/Parallax";
 import profileAsset from "@/assets/profile.png.asset.json";
 import { useGithub } from "@/hooks/useGithub";
 import {
