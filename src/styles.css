@@ -303,3 +303,173 @@
 @utility animate-dissolve {
   animation: dissolve-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* ---- XT interaction / motion layer ---- */
+html {
+  scroll-behavior: smooth;
+  --mx: 0;
+  --my: 0;
+  --cx: 50vw;
+  --cy: 50vh;
+  --scroll-skew: 0deg;
+  --scroll-boost: 0;
+}
+
+@utility parallax {
+  transform: translate3d(calc(var(--mx) * var(--depth, 0) * 1px), calc(var(--my) * var(--depth, 0) * 1px), 0);
+  will-change: transform;
+}
+
+.reveal {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal:not(.is-in) {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0) scale(0.975);
+}
+.reveal-stagger > * {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-stagger:not(.is-in) > * {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+}
+.reveal-stagger.is-in > *:nth-child(1) { transition-delay: 40ms; }
+.reveal-stagger.is-in > *:nth-child(2) { transition-delay: 100ms; }
+.reveal-stagger.is-in > *:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger.is-in > *:nth-child(4) { transition-delay: 220ms; }
+.reveal-stagger.is-in > *:nth-child(5) { transition-delay: 280ms; }
+.reveal-stagger.is-in > *:nth-child(n + 6) { transition-delay: 340ms; }
+
+/* velocity skew — applied to decorative shells only */
+@utility velocity-skew {
+  transform: skewY(var(--scroll-skew));
+  transition: transform 0.12s linear;
+}
+
+/* tilt cards */
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+  will-change: transform;
+}
+.tilt-card .tilt-sheen {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: var(--sheen, 0);
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    340px circle at var(--lx, 50%) var(--ly, 50%),
+    oklch(0.85 0.14 210 / 16%),
+    transparent 60%
+  );
+}
+.tilt-card:hover {
+  box-shadow:
+    var(--shadow-panel),
+    0 0 46px -16px oklch(0.82 0.16 200 / 75%);
+}
+.tilt-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* magnetic elements */
+.magnetic {
+  will-change: transform;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+.magnetic:active {
+  filter: brightness(0.94);
+}
+
+/* custom cursor */
+body.has-custom-cursor,
+body.has-custom-cursor a,
+body.has-custom-cursor button {
+  cursor: none;
+}
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan);
+}
+.cursor-ring {
+  width: 30px;
+  height: 30px;
+  border: 1px solid oklch(0.82 0.16 200 / 55%);
+  transition:
+    width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.28s ease,
+    background-color 0.28s ease,
+    opacity 0.28s ease;
+}
+.cursor-ring.is-hover {
+  width: 54px;
+  height: 54px;
+  border-color: oklch(0.82 0.16 200 / 90%);
+  background: oklch(0.82 0.16 200 / 10%);
+}
+.cursor-ring.is-press {
+  width: 22px;
+  height: 22px;
+}
+
+/* ambient glow that follows the smoothed pointer */
+@utility pointer-glow {
+  background: radial-gradient(
+    460px circle at var(--cx) var(--cy),
+    oklch(0.72 0.18 230 / 16%),
+    transparent 62%
+  );
+}
+
+/* slow, organic background drift */
+@keyframes drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(4%, -3%, 0) scale(1.08); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.04); }
+  50% { transform: translate3d(-5%, 4%, 0) scale(0.96); }
+}
+@utility animate-drift-a {
+  animation: drift-a 34s ease-in-out infinite;
+}
+@utility animate-drift-b {
+  animation: drift-b 46s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .parallax,
+  .tilt-card,
+  .magnetic { transform: none !important; }
+  .animate-drift-a,
+  .animate-drift-b { animation: none !important; }
+  .reveal,
+  .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
+}

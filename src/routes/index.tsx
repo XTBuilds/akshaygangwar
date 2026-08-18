@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { ScrollVelocity } from "@/components/motion/ScrollVelocity";
+import { CustomCursor } from "@/components/motion/CustomCursor";
+import { usePointerField } from "@/hooks/usePointerField";
 import { XTLoader } from "@/components/XTLoader";
 import { CosmicBackdrop } from "@/components/CosmicBackdrop";
 import { CommandOrb } from "@/components/CommandOrb";
@@ -52,6 +56,7 @@ function XTCore() {
   const [showFilters, setShowFilters] = useState(true);
   const [density, setDensity] = useState<"comfortable" | "dense">("comfortable");
   const { data, isLoading, errorMessage } = useGithub();
+  usePointerField();
 
   const status = [
     "INITIALIZING XT CORE...",
@@ -86,18 +91,34 @@ function XTCore() {
         <Nav />
         <main>
           <Hero />
-          <CommandCenter />
-          <FeaturedProjects onSelect={setSelected} />
-          <RepositoryExplorer
-            onSelect={setSelected}
-            showFilters={showFilters}
-            density={density}
-          />
-          <LifeStream />
-          <TechnologyMatrix />
-          <Activity />
-          <About />
-          <Contact />
+          <ScrollReveal>
+            <CommandCenter />
+          </ScrollReveal>
+          <ScrollReveal>
+            <FeaturedProjects onSelect={setSelected} />
+          </ScrollReveal>
+          <ScrollReveal>
+            <RepositoryExplorer
+              onSelect={setSelected}
+              showFilters={showFilters}
+              density={density}
+            />
+          </ScrollReveal>
+          <ScrollReveal>
+            <LifeStream />
+          </ScrollReveal>
+          <ScrollReveal>
+            <TechnologyMatrix />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Activity />
+          </ScrollReveal>
+          <ScrollReveal>
+            <About />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Contact />
+          </ScrollReveal>
         </main>
         <HUD />
         <CommandOrb
@@ -110,6 +131,8 @@ function XTCore() {
           avatar={data?.profile.avatar_url}
           onClose={() => setSelected(null)}
         />
+        <ScrollVelocity />
+        <CustomCursor />
       </div>
     </div>
   );

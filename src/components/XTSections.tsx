@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { MagneticButton, MagneticLink } from "@/components/motion/MagneticButton";
+import { TiltCard } from "@/components/motion/TiltCard";
+import { Parallax } from "@/components/motion/Parallax";
 import profileAsset from "@/assets/profile.png.asset.json";
 import { useGithub } from "@/hooks/useGithub";
 import {
@@ -58,6 +61,14 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
 }
 
 export function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+
   const items = [
     ["Command", "#command"],
     ["Projects", "#projects"],
@@ -67,8 +78,18 @@ export function Nav() {
     ["Contact", "#contact"],
   ];
   return (
-    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <header
+      className={`sticky top-0 z-30 border-b transition-all duration-300 ${
+        scrolled
+          ? "border-cyan/25 bg-background/60 backdrop-blur-2xl shadow-[0_10px_40px_-24px_var(--cyan)]"
+          : "border-border/60 bg-background/40 backdrop-blur-xl"
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-6xl items-center justify-between px-5 transition-all duration-300 ${
+          scrolled ? "py-2.5" : "py-4"
+        }`}
+      >
         <a href="#top" className="font-display text-lg tracking-widest text-gradient">
           {PROFILE_CONFIG.brand}
         </a>
@@ -82,36 +103,24 @@ export function Nav() {
             </a>
           ))}
         </nav>
-        <a
+        <MagneticLink
           href={GH}
           target="_blank"
           rel="noreferrer"
           className="rounded-full border border-cyan/40 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-cyan transition-colors hover:bg-cyan/10"
         >
           GitHub
-        </a>
+        </MagneticLink>
       </div>
     </header>
   );
 }
 
+
 export function Hero() {
   const { data } = useGithub();
-  const reduced = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (reduced) return;
-    const el = ref.current;
-    if (!el) return;
-    const on = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 14;
-      const y = (e.clientY / window.innerHeight - 0.5) * 14;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    };
-    window.addEventListener("mousemove", on);
-    return () => window.removeEventListener("mousemove", on);
-  }, [reduced]);
+
 
   const t = data ? totals(data.repos) : undefined;
   const stats: [string, number | undefined][] = [
@@ -123,12 +132,22 @@ export function Hero() {
 
   return (
     <section id="top" className="relative overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-30" />
-      <div className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-primary/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-accent/20 blur-[130px]" />
+      <Parallax depth={3} className="absolute -inset-6 grid-bg opacity-30" aria-hidden />
+      <Parallax
+        depth={10}
+        className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-primary/20 blur-[120px]"
+        aria-hidden
+      />
+      <Parallax
+        depth={12}
+        invert
+        className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-accent/20 blur-[130px]"
+        aria-hidden
+      />
+      <div className="pointer-glow pointer-events-none absolute inset-0" aria-hidden />
 
       <div className="relative mx-auto grid max-w-6xl gap-10 px-5 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
-        <div className="animate-rise">
+        <Parallax depth={4} className="animate-rise">
           <p className="font-mono text-xs uppercase tracking-[0.45em] text-muted-foreground">
             Turning ideas into <span className="text-cyan caret">code</span>
           </p>
@@ -161,24 +180,24 @@ export function Hero() {
           </dl>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
+            <MagneticLink
               href="#projects"
               className="rounded-md btn-brand px-6 py-3 font-mono text-xs uppercase tracking-[0.2em]"
             >
               View Projects
-            </a>
-            <a
+            </MagneticLink>
+            <MagneticLink
               href={GH}
               target="_blank"
               rel="noreferrer"
               className="rounded-md border border-border px-6 py-3 font-mono text-xs uppercase tracking-[0.2em] text-foreground transition-colors hover:border-cyan hover:text-cyan"
             >
               GitHub
-            </a>
+            </MagneticLink>
           </div>
-        </div>
+        </Parallax>
 
-        <div ref={ref} className="animate-rise space-y-6 transition-transform duration-300">
+        <Parallax depth={14} className="animate-rise space-y-6">
           <div className="panel relative overflow-hidden">
             <img
               src={data?.profile.avatar_url ?? profileAsset.url}
@@ -187,13 +206,13 @@ export function Hero() {
               loading="lazy"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background to-transparent p-4">
-              <p className="font-display text-sm tracking-widest text-cyan">XT CORE</p>
+              <p className="font-display text-sm tracking-widest text-cyan">{PROFILE_CONFIG.brand}</p>
               <p className="font-mono text-xs text-muted-foreground">
                 {data?.profile.bio?.replace(/\.{2,}/g, "") || "Creative frontend engineering."}
               </p>
             </div>
           </div>
-        </div>
+        </Parallax>
       </div>
     </section>
   );
@@ -214,14 +233,14 @@ export function CommandCenter() {
     <section id="command" className="mx-auto max-w-6xl px-5 py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <SectionTitle kicker="// live data" title="GITHUB COMMAND CENTER" />
-        <button
+        <MagneticButton
           type="button"
           onClick={refresh}
           className="rounded-md border border-cyan/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cyan transition-colors hover:bg-cyan/10 disabled:opacity-50"
           disabled={isFetching}
         >
           {isFetching ? "Syncing..." : "Refresh GitHub"}
-        </button>
+        </MagneticButton>
       </div>
 
       <p
@@ -265,30 +284,10 @@ function RepoCard({
   onSelect?: ((r: GithubRepo) => void) | undefined;
   dense?: boolean | undefined;
 }) {
-  const reduced = useReducedMotion();
-  const ref = useRef<HTMLElement>(null);
-
-  const onMove = (e: React.MouseEvent) => {
-    if (reduced) return;
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const rx = ((e.clientY - r.top) / r.height - 0.5) * -6;
-    const ry = ((e.clientX - r.left) / r.width - 0.5) * 6;
-    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
-  };
-  const reset = () => {
-    if (ref.current) ref.current.style.transform = "";
-  };
-
   return (
-    <article
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={reset}
-      className={`holo-panel animate-dissolve group flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        dense ? "p-4" : "p-5"
-      }`}
+    <TiltCard
+      className={`holo-panel animate-dissolve group ${dense ? "p-4" : "p-5"}`}
+      {...(onSelect ? { onActivate: () => onSelect(repo) } : {})}
     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="truncate font-display text-base text-foreground" title={repo.name}>
@@ -312,20 +311,15 @@ function RepoCard({
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
         {onSelect && (
-          <button
+          <MagneticButton
             type="button"
             onClick={() => onSelect(repo)}
             className="rounded-md btn-brand px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em]"
           >
             Open Details
-          </button>
+          </MagneticButton>
         )}
-        <a
-          href={repo.html_url}
-          target="_blank"
-          rel="noreferrer"
-          className="portal-link"
-        >
+        <a href={repo.html_url} target="_blank" rel="noreferrer" className="portal-link">
           View Source
         </a>
         {repo.homepage && (
@@ -334,9 +328,10 @@ function RepoCard({
           </a>
         )}
       </div>
-    </article>
+    </TiltCard>
   );
 }
+
 
 export function FeaturedProjects({ onSelect }: { onSelect?: ((r: GithubRepo) => void) | undefined }) {
   const { data, isLoading, errorMessage } = useGithub();
