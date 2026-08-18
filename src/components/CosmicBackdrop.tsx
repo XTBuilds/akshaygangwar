@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Parallax } from "@/components/motion/Parallax";
 
 /**
  * Fixed deep-space backdrop. Intentionally static: nebula, fog and the
@@ -86,8 +87,9 @@ export function CosmicBackdrop() {
         depth={3}
         className="nebula-deep animate-drift-a absolute bottom-[-20%] left-[20%] h-[60vh] w-[60vw] rounded-full"
       />
-      <Parallax depth={3} as="canvas" className="absolute inset-0 opacity-80" />
-      <canvas ref={ref} className="absolute inset-0 opacity-80" />
+      <Parallax depth={3} className="absolute inset-0">
+        <canvas ref={ref} className="absolute inset-0 opacity-80" />
+      </Parallax>
       <Parallax depth={2} className="absolute -inset-8 grid-bg opacity-[0.12]" />
       <div className="pointer-glow absolute inset-0" />
       <div className="volumetric absolute inset-0" />
