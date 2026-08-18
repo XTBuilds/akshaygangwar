@@ -131,6 +131,8 @@ function XTCore() {
           avatar={data?.profile.avatar_url}
           onClose={() => setSelected(null)}
         />
+        <ScrollVelocity />
+        <CustomCursor />
       </div>
     </div>
   );
