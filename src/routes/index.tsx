@@ -86,18 +86,34 @@ function XTCore() {
         <Nav />
         <main>
           <Hero />
-          <CommandCenter />
-          <FeaturedProjects onSelect={setSelected} />
-          <RepositoryExplorer
-            onSelect={setSelected}
-            showFilters={showFilters}
-            density={density}
-          />
-          <LifeStream />
-          <TechnologyMatrix />
-          <Activity />
-          <About />
-          <Contact />
+          <ScrollReveal>
+            <CommandCenter />
+          </ScrollReveal>
+          <ScrollReveal>
+            <FeaturedProjects onSelect={setSelected} />
+          </ScrollReveal>
+          <ScrollReveal>
+            <RepositoryExplorer
+              onSelect={setSelected}
+              showFilters={showFilters}
+              density={density}
+            />
+          </ScrollReveal>
+          <ScrollReveal>
+            <LifeStream />
+          </ScrollReveal>
+          <ScrollReveal>
+            <TechnologyMatrix />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Activity />
+          </ScrollReveal>
+          <ScrollReveal>
+            <About />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Contact />
+          </ScrollReveal>
         </main>
         <HUD />
         <CommandOrb
