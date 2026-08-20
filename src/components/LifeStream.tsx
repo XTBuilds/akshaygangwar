@@ -53,7 +53,7 @@ export function LifeStream() {
               href={p.permalink}
               target="_blank"
               rel="noreferrer"
-              className="holo-panel group flex h-64 flex-col justify-end overflow-hidden p-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2"
+              className="holo-panel group relative flex h-64 flex-col justify-end overflow-hidden p-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2"
             >
               {p.media_url ? (
                 <img
