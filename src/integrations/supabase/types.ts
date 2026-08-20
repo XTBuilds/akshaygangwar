@@ -119,6 +119,36 @@ export type Database = {
         }
         Relationships: []
       }
+      instagram_posts: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          media_url: string | null
+          permalink: string
+          posted_at: string
+          sort_order: number
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          permalink: string
+          posted_at?: string
+          sort_order?: number
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          permalink?: string
+          posted_at?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           cover_url: string | null
