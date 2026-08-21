@@ -235,14 +235,32 @@ export function CommandCenter() {
     <section id="command" className="mx-auto max-w-6xl px-5 py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <SectionTitle kicker="// live data" title="GITHUB COMMAND CENTER" />
-        <MagneticButton
-          type="button"
-          onClick={refresh}
-          className="rounded-md border border-cyan/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cyan transition-colors hover:bg-cyan/10 disabled:opacity-50"
-          disabled={isFetching}
-        >
-          {isFetching ? "Syncing..." : "Refresh GitHub"}
-        </MagneticButton>
+        <div className="flex flex-wrap gap-2">
+          <MagneticButton
+            type="button"
+            onClick={refresh}
+            className="rounded-md border border-cyan/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cyan transition-colors hover:bg-cyan/10 disabled:opacity-50"
+            disabled={isFetching}
+          >
+            {isFetching ? "Syncing..." : "Refresh GitHub"}
+          </MagneticButton>
+          <MagneticLink
+            href={`${GH}?tab=repositories`}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md border border-violet/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-violet transition-colors hover:bg-violet/10"
+          >
+            Open Repositories
+          </MagneticLink>
+          <MagneticLink
+            href={GH}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md btn-brand px-5 py-2 font-mono text-xs uppercase tracking-[0.2em]"
+          >
+            Open GitHub Profile
+          </MagneticLink>
+        </div>
       </div>
 
       <p
