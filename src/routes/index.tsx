@@ -114,7 +114,13 @@ function XTCore() {
             <Activity />
           </ScrollReveal>
           <ScrollReveal>
+            <BlogSection />
+          </ScrollReveal>
+          <ScrollReveal>
             <About />
+          </ScrollReveal>
+          <ScrollReveal>
+            <HireSection />
           </ScrollReveal>
           <ScrollReveal>
             <Contact />
