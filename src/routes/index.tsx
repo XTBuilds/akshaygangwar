@@ -141,6 +141,7 @@ function XTCore() {
           onClose={() => setSelected(null)}
         />
         <ScrollVelocity />
+        <Toaster position="bottom-right" />
         <CustomCursor />
       </div>
     </div>
