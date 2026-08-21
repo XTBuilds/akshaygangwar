@@ -670,6 +670,7 @@ export function Contact() {
           </a>
         ))}
       </div>
+      <ContactForm />
       <p className="mt-14 text-center font-display text-lg text-gradient">
         Not here to compete. Here to be remembered.
       </p>
