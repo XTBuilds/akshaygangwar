@@ -73,7 +73,9 @@ export function Nav() {
     ["Command", "#command"],
     ["Projects", "#projects"],
     ["All Repos", "#repos"],
-    ["Matrix", "#matrix"],
+    ["Stream", "#stream"],
+    ["Blog", "#blog"],
+    ["Hire", "#hire"],
     ["About", "#about"],
     ["Contact", "#contact"],
   ];
