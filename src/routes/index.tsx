@@ -9,6 +9,9 @@ import { CosmicBackdrop } from "@/components/CosmicBackdrop";
 import { CommandOrb } from "@/components/CommandOrb";
 import { RepoDrawer } from "@/components/RepoDrawer";
 import { LifeStream } from "@/components/LifeStream";
+import { BlogSection } from "@/components/BlogSection";
+import { HireSection } from "@/components/HireSection";
+import { Toaster } from "@/components/ui/sonner";
 import type { GithubRepo } from "@/services/github";
 import { HUD } from "@/components/HUD";
 import { GithubProvider, useGithub } from "@/hooks/useGithub";
@@ -114,7 +117,13 @@ function XTCore() {
             <Activity />
           </ScrollReveal>
           <ScrollReveal>
+            <BlogSection />
+          </ScrollReveal>
+          <ScrollReveal>
             <About />
+          </ScrollReveal>
+          <ScrollReveal>
+            <HireSection />
           </ScrollReveal>
           <ScrollReveal>
             <Contact />
@@ -132,6 +141,7 @@ function XTCore() {
           onClose={() => setSelected(null)}
         />
         <ScrollVelocity />
+        <Toaster position="bottom-right" />
         <CustomCursor />
       </div>
     </div>

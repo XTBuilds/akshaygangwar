@@ -114,6 +114,31 @@
   box-shadow: var(--shadow-glow);
 }
 
+@utility xt-input {
+  width: 100%;
+  background: oklch(0.16 0.03 275 / 60%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.7rem 0.9rem;
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  outline: none;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+
+  &::placeholder {
+    color: var(--muted-foreground);
+  }
+
+  &:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px oklch(0.7 0.18 220 / 18%);
+  }
+}
+
 @utility rule-brand {
   background-image: var(--gradient-brand);
 }

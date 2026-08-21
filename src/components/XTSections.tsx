@@ -4,6 +4,7 @@ import { TiltCard } from "@/components/motion/TiltCard";
 import { Parallax } from "@/components/motion/Parallax";
 import profileAsset from "@/assets/profile.png.asset.json";
 import { useGithub } from "@/hooks/useGithub";
+import { ContactForm } from "@/components/ContactForm";
 import {
   PROFILE_CONFIG,
   featuredRepos,
@@ -73,7 +74,9 @@ export function Nav() {
     ["Command", "#command"],
     ["Projects", "#projects"],
     ["All Repos", "#repos"],
-    ["Matrix", "#matrix"],
+    ["Stream", "#stream"],
+    ["Blog", "#blog"],
+    ["Hire", "#hire"],
     ["About", "#about"],
     ["Contact", "#contact"],
   ];
@@ -233,14 +236,32 @@ export function CommandCenter() {
     <section id="command" className="mx-auto max-w-6xl px-5 py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <SectionTitle kicker="// live data" title="GITHUB COMMAND CENTER" />
-        <MagneticButton
-          type="button"
-          onClick={refresh}
-          className="rounded-md border border-cyan/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cyan transition-colors hover:bg-cyan/10 disabled:opacity-50"
-          disabled={isFetching}
-        >
-          {isFetching ? "Syncing..." : "Refresh GitHub"}
-        </MagneticButton>
+        <div className="flex flex-wrap gap-2">
+          <MagneticButton
+            type="button"
+            onClick={refresh}
+            className="rounded-md border border-cyan/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cyan transition-colors hover:bg-cyan/10 disabled:opacity-50"
+            disabled={isFetching}
+          >
+            {isFetching ? "Syncing..." : "Refresh GitHub"}
+          </MagneticButton>
+          <MagneticLink
+            href={`${GH}?tab=repositories`}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md border border-violet/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-violet transition-colors hover:bg-violet/10"
+          >
+            Open Repositories
+          </MagneticLink>
+          <MagneticLink
+            href={GH}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md btn-brand px-5 py-2 font-mono text-xs uppercase tracking-[0.2em]"
+          >
+            Open GitHub Profile
+          </MagneticLink>
+        </div>
       </div>
 
       <p
@@ -650,6 +671,7 @@ export function Contact() {
           </a>
         ))}
       </div>
+      <ContactForm />
       <p className="mt-14 text-center font-display text-lg text-gradient">
         Not here to compete. Here to be remembered.
       </p>
