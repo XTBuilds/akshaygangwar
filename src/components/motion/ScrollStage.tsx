@@ -1,5 +1,5 @@
 import { useRef, type ReactNode } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { cubicBezier, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ease } from "@/lib/motion";
 
@@ -37,7 +37,7 @@ export function ScrollStage({
   const enterS = useSpring(enterP, spring);
   const exitS = useSpring(exitP, spring);
 
-  const yIn = useTransform(enterS, [0, 1], [96 * damp, 0], { ease: ease.out as unknown as (t: number) => number });
+  const yIn = useTransform(enterS, [0, 1], [96 * damp, 0], { ease: cubicBezier(...ease.out) });
   const sIn = useTransform(enterS, [0, 1], [1 - 0.1 * damp, 1]);
   const oIn = useTransform(enterS, [0, 1], [0.35, 1]);
   const yOut = useTransform(exitS, [0, 1], [0, -72 * damp]);
