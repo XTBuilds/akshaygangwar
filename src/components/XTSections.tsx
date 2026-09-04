@@ -261,7 +261,7 @@ export function CommandCenter() {
     loading: "SYNCING GITHUB DATA...",
     error: `● ${errorMessage} — CONNECTION: OFFLINE`,
     stale: `● ${errorMessage} — SHOWING LAST GOOD SYNC`,
-    online: "● GITHUB CORE ONLINE — CONNECTION: ONLINE",
+    online: "GITHUB CORE ONLINE — CONNECTION: ONLINE",
   }[state];
 
   return (
