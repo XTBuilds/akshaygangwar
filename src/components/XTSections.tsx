@@ -16,39 +16,43 @@ import {
 
 const GH = PROFILE_CONFIG.links.github;
 
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const on = () => setReduced(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  return reduced;
-}
-
 function Counter({ value }: { value: number | undefined }) {
   const reduced = useReducedMotion();
+  const mv = useMotionValue(0);
   const [n, setN] = useState(0);
   useEffect(() => {
     if (value === undefined) return;
     if (reduced) {
+      mv.set(value);
       setN(value);
       return;
     }
-    const start = performance.now();
-    let raf = 0;
-    const step = (t: number) => {
-      const p = Math.min(1, (t - start) / 900);
-      setN(Math.round(value * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [value, reduced]);
-  if (value === undefined) return <span className="text-muted-foreground">--</span>;
+    const controls = animate(mv, value, {
+      ...presets.gentle,
+      duration: 1.1,
+      onUpdate: (v) => setN(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [value, reduced, mv]);
+  if (value === undefined)
+    return (
+      <span className="inline-block h-[1em] w-16 animate-pulse rounded bg-muted/60 align-middle" aria-label="loading" />
+    );
   return <span>{n.toLocaleString()}</span>;
+}
+
+function useRelativeTime(ts: number | undefined) {
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => tick((x) => x + 1), 15000);
+    return () => clearInterval(id);
+  }, []);
+  if (!ts) return null;
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 10) return "just now";
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  return `${Math.floor(s / 3600)}h ago`;
 }
 
 function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
