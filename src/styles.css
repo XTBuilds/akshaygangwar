@@ -498,3 +498,16 @@ body.has-custom-cursor button {
   .reveal,
   .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
 }
+
+/* ---- mobile / coarse-pointer performance budget ---- */
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  .parallax { transform: none !important; will-change: auto; }
+  .pointer-glow { background: none !important; }
+  .tilt-card { transition: box-shadow 0.3s ease; will-change: auto; }
+  .tilt-card .tilt-sheen { display: none; }
+  .holo-panel,
+  .panel { backdrop-filter: blur(8px); }
+  .animate-drift-a,
+  .animate-drift-b { animation-duration: 60s; }
+  .velocity-skew { transform: none !important; }
+}

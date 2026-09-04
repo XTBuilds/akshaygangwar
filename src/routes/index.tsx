@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { MotionConfig } from "motion/react";
+import { ScrollStage } from "@/components/motion/ScrollStage";
+import { MahiruAssistant } from "@/components/MahiruAssistant";
 import { ScrollVelocity } from "@/components/motion/ScrollVelocity";
 import { CustomCursor } from "@/components/motion/CustomCursor";
 import { usePointerField } from "@/hooks/usePointerField";
@@ -47,9 +49,11 @@ export const Route = createFileRoute("/")({
     ],
   }),
   component: () => (
-    <GithubProvider>
-      <XTCore />
-    </GithubProvider>
+    <MotionConfig reducedMotion="user">
+      <GithubProvider>
+        <XTCore />
+      </GithubProvider>
+    </MotionConfig>
   ),
 });
 
@@ -94,40 +98,40 @@ function XTCore() {
         <Nav />
         <main>
           <Hero />
-          <ScrollReveal>
+          <ScrollStage>
             <CommandCenter />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <FeaturedProjects onSelect={setSelected} />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <RepositoryExplorer
               onSelect={setSelected}
               showFilters={showFilters}
               density={density}
             />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <LifeStream />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <TechnologyMatrix />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <Activity />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <BlogSection />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <About />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <HireSection />
-          </ScrollReveal>
-          <ScrollReveal>
+          </ScrollStage>
+          <ScrollStage>
             <Contact />
-          </ScrollReveal>
+          </ScrollStage>
         </main>
         <HUD />
         <CommandOrb
@@ -142,6 +146,7 @@ function XTCore() {
         />
         <ScrollVelocity />
         <Toaster position="bottom-right" />
+        <MahiruAssistant />
         <CustomCursor />
       </div>
     </div>

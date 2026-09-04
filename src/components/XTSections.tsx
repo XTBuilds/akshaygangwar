@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { animate, motion, useMotionValue, useReducedMotion } from "motion/react";
+import { presets, press } from "@/lib/motion";
 import { MagneticButton, MagneticLink } from "@/components/motion/MagneticButton";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { Parallax } from "@/components/motion/Parallax";
@@ -16,39 +18,43 @@ import {
 
 const GH = PROFILE_CONFIG.links.github;
 
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const on = () => setReduced(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  return reduced;
-}
-
 function Counter({ value }: { value: number | undefined }) {
   const reduced = useReducedMotion();
+  const mv = useMotionValue(0);
   const [n, setN] = useState(0);
   useEffect(() => {
     if (value === undefined) return;
     if (reduced) {
+      mv.set(value);
       setN(value);
       return;
     }
-    const start = performance.now();
-    let raf = 0;
-    const step = (t: number) => {
-      const p = Math.min(1, (t - start) / 900);
-      setN(Math.round(value * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [value, reduced]);
-  if (value === undefined) return <span className="text-muted-foreground">--</span>;
+    const controls = animate(mv, value, {
+      ...presets.gentle,
+      duration: 1.1,
+      onUpdate: (v) => setN(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [value, reduced, mv]);
+  if (value === undefined)
+    return (
+      <span className="inline-block h-[1em] w-16 animate-pulse rounded bg-muted/60 align-middle" aria-label="loading" />
+    );
   return <span>{n.toLocaleString()}</span>;
+}
+
+function useRelativeTime(ts: number | undefined) {
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => tick((x) => x + 1), 15000);
+    return () => clearInterval(id);
+  }, []);
+  if (!ts) return null;
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 10) return "just now";
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  return `${Math.floor(s / 3600)}h ago`;
 }
 
 function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
@@ -224,6 +230,11 @@ export function Hero() {
 export function CommandCenter() {
   const { data, isLoading, isFetching, errorMessage, refresh } = useGithub();
   const t = data ? totals(data.repos) : undefined;
+  const lm = data ? languageMatrix(data.repos) : [];
+  const lastPush = data
+    ? data.repos.reduce<string | null>((a, r) => (!a || r.pushed_at > a ? r.pushed_at : a), null)
+    : null;
+  const rel = useRelativeTime(data?.syncedAt);
   const cells: [string, number | undefined][] = [
     ["Public Repositories", data?.profile.public_repos],
     ["Followers", data?.profile.followers],
@@ -231,6 +242,27 @@ export function CommandCenter() {
     ["Total Stars", t?.stars],
     ["Total Forks", t?.forks],
   ];
+
+  const state: "loading" | "error" | "stale" | "online" = isLoading
+    ? "loading"
+    : errorMessage && !data
+      ? "error"
+      : errorMessage
+        ? "stale"
+        : "online";
+
+  const tone = {
+    loading: "text-cyan",
+    error: "text-destructive",
+    stale: "text-[oklch(0.85_0.17_80)]",
+    online: "text-neon",
+  }[state];
+  const label = {
+    loading: "SYNCING GITHUB DATA...",
+    error: `● ${errorMessage} — CONNECTION: OFFLINE`,
+    stale: `● ${errorMessage} — SHOWING LAST GOOD SYNC`,
+    online: "GITHUB CORE ONLINE — CONNECTION: ONLINE",
+  }[state];
 
   return (
     <section id="command" className="mx-auto max-w-6xl px-5 py-16">
@@ -240,10 +272,19 @@ export function CommandCenter() {
           <MagneticButton
             type="button"
             onClick={refresh}
+            aria-busy={isFetching}
             className="rounded-md border border-cyan/40 px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cyan transition-colors hover:bg-cyan/10 disabled:opacity-50"
             disabled={isFetching}
           >
-            {isFetching ? "Syncing..." : "Refresh GitHub"}
+            <span className="inline-flex items-center gap-2">
+              <span
+                className={`inline-block h-2 w-2 rounded-full ${
+                  isFetching ? "animate-spin border border-cyan border-t-transparent" : "bg-cyan"
+                }`}
+                aria-hidden
+              />
+              {isFetching ? "Syncing..." : state === "error" ? "Retry Sync" : "Refresh GitHub"}
+            </span>
           </MagneticButton>
           <MagneticLink
             href={`${GH}?tab=repositories`}
@@ -264,34 +305,72 @@ export function CommandCenter() {
         </div>
       </div>
 
-      <p
-        className={`mt-5 font-mono text-xs uppercase tracking-[0.3em] ${
-          errorMessage ? "text-destructive" : "text-neon"
-        }`}
-        role="status"
-      >
-        {errorMessage
-          ? `● ${errorMessage}`
-          : isLoading
-            ? "SYNCING GITHUB DATA..."
-            : "● GITHUB CORE ONLINE — CONNECTION: ONLINE"}
-      </p>
-      {data && (
-        <p className="mt-1 font-mono text-xs text-muted-foreground">
-          LAST SYNC: {new Date(data.syncedAt).toLocaleString()}
+      <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-1">
+        <p
+          className={`inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] ${tone}`}
+          role="status"
+          aria-live="polite"
+        >
+          {state === "online" && (
+            <motion.span
+              aria-hidden
+              className="inline-block h-2 w-2 rounded-full bg-neon"
+              animate={{ opacity: [1, 0.35, 1], scale: [1, 0.85, 1] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+          )}
+          {label}
         </p>
+        {data && (
+          <p className="font-mono text-xs text-muted-foreground">
+            LAST SYNC: {new Date(data.syncedAt).toLocaleTimeString()} ({rel})
+            {lastPush && <> · LAST PUSH: {formatDate(lastPush)}</>}
+          </p>
+        )}
+      </div>
+
+      {state === "error" && (
+        <div className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 p-4 font-mono text-xs text-muted-foreground">
+          Live metrics unavailable. {errorMessage === "GITHUB RATE LIMIT REACHED"
+            ? "GitHub's public API limit was hit from your network — it resets within an hour."
+            : "Check your connection and retry."}{" "}
+          Repositories are always available directly on{" "}
+          <a href={GH} target="_blank" rel="noreferrer" className="text-cyan underline">
+            github.com/akshayxt
+          </a>
+          .
+        </div>
       )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        {cells.map(([k, v]) => (
-          <div key={k} className="panel p-5">
+        {cells.map(([k, v], i) => (
+          <motion.div
+            key={k}
+            className={`panel p-5 ${state === "error" ? "opacity-60" : ""}`}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ ...presets.gentle, delay: i * 0.06 }}
+            whileHover={{ y: -3 }}
+            whileTap={press}
+          >
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-violet">{k}</p>
             <p className="mt-2 font-display text-3xl text-foreground">
-              <Counter value={v} />
+              {state === "error" ? <span className="text-muted-foreground">--</span> : <Counter value={v} />}
             </p>
-          </div>
+          </motion.div>
         ))}
       </div>
+
+      {lm.length > 0 && (
+        <div className="mt-6 flex flex-wrap gap-2" aria-label="Top languages">
+          {lm.slice(0, 6).map((l) => (
+            <span key={l.language} className="chip">
+              {l.language} · {l.percent}%
+            </span>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
