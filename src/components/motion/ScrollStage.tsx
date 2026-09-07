@@ -25,28 +25,31 @@ export function ScrollStage({
 
   const { scrollYProgress: enterP } = useScroll({
     target: ref,
-    offset: ["start end", "start 0.28"],
+    offset: ["start end", "start 0.3"],
   });
   const { scrollYProgress: exitP } = useScroll({
     target: ref,
-    offset: ["end 0.72", "end start"],
+    offset: ["end 0.8", "end start"],
   });
 
-  const damp = mobile ? 0.55 : 1;
-  const spring = { stiffness: 220, damping: 34, mass: 0.6, restDelta: 0.001 };
+  const damp = mobile ? 0.5 : 1;
+  const spring = { stiffness: 200, damping: 32, mass: 0.6, restDelta: 0.001 };
   const enterS = useSpring(enterP, spring);
   const exitS = useSpring(exitP, spring);
 
-  const yIn = useTransform(enterS, [0, 1], [96 * damp, 0], { ease: cubicBezier(...ease.out) });
-  const sIn = useTransform(enterS, [0, 1], [1 - 0.1 * damp, 1]);
-  const oIn = useTransform(enterS, [0, 1], [0.35, 1]);
-  const yOut = useTransform(exitS, [0, 1], [0, -72 * damp]);
-  const sOut = useTransform(exitS, [0, 1], [1, 1 - 0.06 * damp]);
-  const oOut = useTransform(exitS, [0, 1], [1, 0.4]);
+  // entering from below: rises + zooms in
+  const yIn = useTransform(enterS, [0, 1], [130 * damp, 0], { ease: cubicBezier(...ease.out) });
+  const sIn = useTransform(enterS, [0, 1], [1 - 0.16 * damp, 1]);
+  const oIn = useTransform(enterS, [0, 1], [0.1, 1]);
+  // leaving at the top: pushes toward the viewer (zooms out of frame) + fades
+  const yOut = useTransform(exitS, [0, 1], [0, -90 * damp]);
+  const sOut = useTransform(exitS, [0, 1], [1, 1 + 0.14 * damp]);
+  const oOut = useTransform(exitS, [0, 1], [1, 0]);
 
   const y = useTransform([yIn, yOut], ([a, b]) => (a as number) + (b as number));
   const scale = useTransform([sIn, sOut], ([a, b]) => (a as number) * (b as number));
   const opacity = useTransform([oIn, oOut], ([a, b]) => Math.min(a as number, b as number));
+
 
   if (reduced) {
     return (
