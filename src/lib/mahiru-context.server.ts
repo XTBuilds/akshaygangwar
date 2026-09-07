@@ -85,7 +85,7 @@ export async function getMahiruContext(): Promise<string> {
   lines.push(
     `LINKS: GitHub ${PROFILE_CONFIG.links.github}, Instagram ${PROFILE_CONFIG.links.instagram}, Telegram ${PROFILE_CONFIG.links.telegram}`,
   );
-  lines.push("SITE SECTIONS: #command (GitHub Command Center), #projects, #repos, #stream (Instagram), #blog, #hire (hire form), #about, #contact (contact form), /projects page, /blog/<slug> pages.");
+  lines.push("SITE SECTIONS: #command (GitHub Command Center), #projects, #lab (XT LAB bento of experimental builds), #repos, #stream (Instagram), #blog, #hire (hire form), #about, #contact (contact form), /projects page, /work/<repo-slug> case-file pages (one per GitHub project, slug = repo name lowercased with dashes), /blog/<slug> pages.");
 
   if (profile) {
     lines.push(

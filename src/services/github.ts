@@ -197,3 +197,33 @@ export async function fetchRepoCommitSeries(repo: GithubRepo): Promise<CommitPoi
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([date, v]) => ({ date, count: v.count, message: v.message }));
 }
+
+export function repoSlug(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function findRepoBySlug(repos: GithubRepo[], slug: string) {
+  return repos.find((r) => repoSlug(r.name) === slug) ?? null;
+}
+
+/** Experimental / lab builds: original repos, freshest first, richest signal first. */
+export function labRepos(repos: GithubRepo[], count = 7) {
+  return [...repos]
+    .filter((r) => !r.fork && !r.archived)
+    .sort((a, b) => {
+      const score = (r: GithubRepo) =>
+        r.stargazers_count * 3 + (r.homepage ? 4 : 0) + r.topics.length + (r.description ? 2 : 0);
+      const d = score(b) - score(a);
+      if (d !== 0) return d;
+      return +new Date(b.pushed_at) - +new Date(a.pushed_at);
+    })
+    .slice(0, count);
+}
+
+export async function fetchRepoByName(name: string): Promise<GithubRepo> {
+  const r = await get<RawRepo>(`/repos/${USER}/${name}`);
+  return { ...r, topics: r.topics ?? [], license: r.license?.spdx_id ?? r.license?.name ?? null };
+}

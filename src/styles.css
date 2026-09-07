@@ -423,9 +423,8 @@ html {
 
 /* custom cursor */
 body.has-custom-cursor,
-body.has-custom-cursor a,
-body.has-custom-cursor button {
-  cursor: none;
+body.has-custom-cursor * {
+  cursor: none !important;
 }
 .cursor-dot,
 .cursor-ring {
@@ -434,6 +433,12 @@ body.has-custom-cursor button {
   left: 0;
   border-radius: 9999px;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.cursor-dot.is-visible,
+.cursor-ring.is-visible {
+  opacity: 1;
 }
 .cursor-dot {
   width: 6px;
@@ -450,7 +455,7 @@ body.has-custom-cursor button {
     height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.28s ease,
     background-color 0.28s ease,
-    opacity 0.28s ease;
+    opacity 0.2s ease;
 }
 .cursor-ring.is-hover {
   width: 54px;
@@ -462,6 +467,7 @@ body.has-custom-cursor button {
   width: 22px;
   height: 22px;
 }
+
 
 /* ambient glow that follows the smoothed pointer */
 @utility pointer-glow {
