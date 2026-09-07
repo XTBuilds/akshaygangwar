@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { animate, motion, useMotionValue, useReducedMotion } from "motion/react";
 import { presets, press } from "@/lib/motion";
 import { MagneticButton, MagneticLink } from "@/components/motion/MagneticButton";
@@ -12,6 +13,7 @@ import {
   featuredRepos,
   formatDate,
   languageMatrix,
+  repoSlug,
   totals,
   type GithubRepo,
 } from "@/services/github";
@@ -79,6 +81,7 @@ export function Nav() {
   const items = [
     ["Command", "#command"],
     ["Projects", "#projects"],
+    ["XT Lab", "#lab"],
     ["All Repos", "#repos"],
     ["Stream", "#stream"],
     ["Blog", "#blog"],
@@ -410,6 +413,13 @@ function RepoCard({
         <span>{formatDate(repo.updated_at)}</span>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
+        <Link
+          to="/work/$slug"
+          params={{ slug: repoSlug(repo.name) }}
+          className="rounded-md btn-brand px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em]"
+        >
+          Case File
+        </Link>
         {onSelect && (
           <MagneticButton
             type="button"

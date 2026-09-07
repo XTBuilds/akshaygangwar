@@ -13,6 +13,7 @@ import { RepoDrawer } from "@/components/RepoDrawer";
 import { LifeStream } from "@/components/LifeStream";
 import { BlogSection } from "@/components/BlogSection";
 import { HireSection } from "@/components/HireSection";
+import { XTLab } from "@/components/XTLab";
 import { Toaster } from "@/components/ui/sonner";
 import type { GithubRepo } from "@/services/github";
 import { HUD } from "@/components/HUD";
@@ -97,12 +98,17 @@ function XTCore() {
       <div className={booted ? "animate-rise" : "invisible"}>
         <Nav />
         <main>
-          <Hero />
+          <ScrollStage>
+            <Hero />
+          </ScrollStage>
           <ScrollStage>
             <CommandCenter />
           </ScrollStage>
           <ScrollStage>
             <FeaturedProjects onSelect={setSelected} />
+          </ScrollStage>
+          <ScrollStage>
+            <XTLab />
           </ScrollStage>
           <ScrollStage>
             <RepositoryExplorer
