@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createOpenAI } from "@ai-sdk/openai";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from "ai";
+import { z } from "zod";
 import {
   createLovableAiGatewayRunIdFetch,
   getLovableAiGatewayResponseHeaders,
