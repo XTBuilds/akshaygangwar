@@ -63,6 +63,37 @@ ${context}`;
             system,
             messages: await convertToModelMessages(trimmed),
             abortSignal: request.signal,
+            stopWhen: stepCountIs(6),
+            tools: {
+              sendMessageToAkshay: tool({
+                description:
+                  "Deliver a visitor's message to Akshay. Use only with details the visitor actually provided.",
+                inputSchema: z.object({
+                  name: z.string().min(2).max(80),
+                  email: z.string().email().max(160),
+                  message: z.string().min(5).max(4000),
+                  subject: z.string().max(120).optional(),
+                }),
+                execute: async ({ name, email, message, subject }) => {
+                  try {
+                    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                    const { error } = await supabaseAdmin.from("contact_messages").insert({
+                      name,
+                      email,
+                      subject: subject || "Via Mahiru assistant",
+                      message,
+                    });
+                    if (error) return { delivered: false as const, reason: error.message };
+                    return { delivered: true as const };
+                  } catch (e) {
+                    return {
+                      delivered: false as const,
+                      reason: e instanceof Error ? e.message : "unknown error",
+                    };
+                  }
+                },
+              }),
+            },
             providerOptions: {
               openai: {
                 forceReasoning: true,
