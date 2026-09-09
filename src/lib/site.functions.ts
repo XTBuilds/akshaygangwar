@@ -28,6 +28,12 @@ export const submitContact = createServerFn({ method: "POST" })
       message: data.message,
     });
     if (error) throw new Error(`Could not save message: ${error.message}`);
+    const { notifyOwner } = await import("@/lib/notify.server");
+    await notifyOwner(
+      `XT contact — ${data.subject || data.name}`,
+      { name: data.name, email: data.email, subject: data.subject, message: data.message },
+      data.email,
+    );
     return { ok: true as const };
   });
 
