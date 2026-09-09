@@ -84,6 +84,12 @@ ${context}`;
                       message,
                     });
                     if (error) return { delivered: false as const, reason: error.message };
+                    const { notifyOwner } = await import("@/lib/notify.server");
+                    await notifyOwner(
+                      `XT via Mahiru — ${subject || name}`,
+                      { name, email, subject, message },
+                      email,
+                    );
                     return { delivered: true as const };
                   } catch (e) {
                     return {
