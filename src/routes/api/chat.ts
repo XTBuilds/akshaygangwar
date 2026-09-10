@@ -67,6 +67,15 @@ ${context}`;
             abortSignal: request.signal,
             stopWhen: stepCountIs(6),
             tools: {
+              getRepoDetails: tool({
+                description:
+                  "Fetch live details for one of Akshay's GitHub repositories: description, topics, language split, stars, last push and a README excerpt. Use the exact repo name from the data list.",
+                inputSchema: z.object({ repo: z.string().min(1).max(120) }),
+                execute: async ({ repo }) => {
+                  const { getRepoDetail } = await import("@/lib/mahiru-context.server");
+                  return { details: await getRepoDetail(repo) };
+                },
+              }),
               sendMessageToAkshay: tool({
                 description:
                   "Deliver a visitor's message to Akshay. Use only with details the visitor actually provided.",
