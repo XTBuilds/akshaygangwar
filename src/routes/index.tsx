@@ -2,9 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { MotionConfig } from "motion/react";
 import { ScrollStage } from "@/components/motion/ScrollStage";
-import { MahiruAssistant } from "@/components/MahiruAssistant";
 import { ScrollVelocity } from "@/components/motion/ScrollVelocity";
-import { CustomCursor } from "@/components/motion/CustomCursor";
 import { usePointerField } from "@/hooks/usePointerField";
 import { XTLoader } from "@/components/XTLoader";
 import { CosmicBackdrop } from "@/components/CosmicBackdrop";
@@ -151,9 +149,7 @@ function XTCore() {
           onClose={() => setSelected(null)}
         />
         <ScrollVelocity />
-        <Toaster position="bottom-right" />
-        <MahiruAssistant />
-        <CustomCursor />
+        <Toaster position="top-right" />
       </div>
     </div>
   );

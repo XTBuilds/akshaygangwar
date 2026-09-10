@@ -73,7 +73,7 @@ export function MahiruAssistant() {
         whileHover={{ scale: 1.06, y: -2 }}
         whileTap={press}
         transition={presets.ui}
-        className="fixed bottom-24 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full holo-panel !rounded-full border-cyan/50 sm:bottom-6 sm:right-24"
+        className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full holo-panel !rounded-full border-cyan/50 sm:bottom-8 sm:right-6"
       >
         {open ? (
           <X className="h-5 w-5 text-cyan" />
@@ -95,7 +95,7 @@ export function MahiruAssistant() {
             initial="hidden"
             animate="show"
             exit="exit"
-            className="fixed inset-x-3 bottom-40 z-40 flex max-h-[70vh] flex-col overflow-hidden holo-panel bg-background/85 sm:inset-x-auto sm:bottom-24 sm:right-6 sm:h-[600px] sm:max-h-[calc(100vh-8rem)] sm:w-[400px]"
+            className="fixed inset-x-3 bottom-24 z-50 flex max-h-[calc(100vh-9rem)] flex-col overflow-hidden holo-panel bg-background/90 sm:inset-x-auto sm:bottom-28 sm:right-6 sm:h-[600px] sm:max-h-[calc(100vh-10rem)] sm:w-[400px]"
           >
             <header className="flex items-center gap-3 border-b border-cyan/20 px-4 py-3">
               <img src={mahiruMark} alt="" width={512} height={512} className="h-9 w-9" loading="lazy" />
