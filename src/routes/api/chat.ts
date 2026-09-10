@@ -65,7 +65,7 @@ ${context}`;
             system,
             messages: await convertToModelMessages(trimmed),
             abortSignal: request.signal,
-            stopWhen: stepCountIs(6),
+            stopWhen: stepCountIs(50),
             tools: {
               getRepoDetails: tool({
                 description:
@@ -114,7 +114,7 @@ ${context}`;
             providerOptions: {
               openai: {
                 forceReasoning: true,
-                reasoningEffort: "low",
+                reasoningEffort: "medium",
                 reasoningSummary: "auto",
                 store: false,
                 include: ["reasoning.encrypted_content"],
