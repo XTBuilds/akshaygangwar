@@ -69,6 +69,52 @@ async function loadProjects() {
   }
 }
 
+const detailCache = new Map<string, { at: number; text: string }>();
+
+/** Deep detail for one repo: metadata, language split and README excerpt. */
+export async function getRepoDetail(name: string): Promise<string> {
+  const repo = name.trim().replace(/^.*\//, "");
+  const hit = detailCache.get(repo.toLowerCase());
+  if (hit && Date.now() - hit.at < TTL) return hit.text;
+
+  const [meta, langs, readme] = await Promise.all([
+    gh<Repo>(`/repos/${USER}/${repo}`),
+    gh<Record<string, number>>(`/repos/${USER}/${repo}/languages`),
+    (async () => {
+      try {
+        const res = await fetch(`${API}/repos/${USER}/${repo}/readme`, {
+          headers: { Accept: "application/vnd.github.raw", "User-Agent": "xt-mahiru" },
+        });
+        if (!res.ok) return null;
+        return (await res.text()).slice(0, 6000);
+      } catch {
+        return null;
+      }
+    })(),
+  ]);
+
+  if (!meta) return `No public repository named "${repo}" was found on GitHub for @${USER}.`;
+
+  const total = Object.values(langs ?? {}).reduce((a, b) => a + b, 0) || 1;
+  const split = Object.entries(langs ?? {})
+    .sort((a, b) => b[1] - a[1])
+    .map(([l, b]) => `${l} ${Math.round((b / total) * 100)}%`)
+    .join(", ");
+
+  const text = [
+    `REPO: ${meta.name} — ${meta.description ?? "no description"}`,
+    `URL: ${meta.html_url}${meta.homepage ? ` | live: ${meta.homepage}` : ""}`,
+    `Stars ${meta.stargazers_count} · forks ${meta.forks_count} · last push ${meta.pushed_at.slice(0, 10)}${meta.archived ? " · archived" : ""}`,
+    `Topics: ${(meta.topics ?? []).join(", ") || "none"}`,
+    `Languages: ${split || meta.language || "unknown"}`,
+    `Case file page on this site: /work/${meta.name.toLowerCase()}`,
+    readme ? `README (excerpt):\n${readme}` : "README: not available.",
+  ].join("\n");
+
+  detailCache.set(repo.toLowerCase(), { at: Date.now(), text });
+  return text;
+}
+
 /** Builds (and caches for 5 min) the grounding text Mahiru answers from. */
 export async function getMahiruContext(): Promise<string> {
   if (cache && Date.now() - cache.at < TTL) return cache.text;
