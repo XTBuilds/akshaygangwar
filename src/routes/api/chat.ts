@@ -89,7 +89,7 @@ ${context}`;
                     const { notifyOwner } = await import("@/lib/notify.server");
                     await notifyOwner(
                       `XT via Mahiru — ${subject || name}`,
-                      { name, email, subject, message },
+                      { name, email, subject: subject ?? undefined, message },
                       email,
                     );
                     return { delivered: true as const };
