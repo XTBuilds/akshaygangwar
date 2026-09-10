@@ -74,7 +74,7 @@ ${context}`;
                   name: z.string().min(2).max(80),
                   email: z.string().email().max(160),
                   message: z.string().min(5).max(4000),
-                  subject: z.string().max(120).optional(),
+                  subject: z.string().max(120).nullable(),
                 }),
                 execute: async ({ name, email, message, subject }) => {
                   try {
