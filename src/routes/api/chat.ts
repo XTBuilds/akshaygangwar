@@ -61,7 +61,7 @@ ${context}`;
 
         try {
           const result = streamText({
-            model: lovable.responses("openai/gpt-5.6-sol"),
+            model: lovable.responses("openai/gpt-6-astra"),
             system,
             messages: await convertToModelMessages(trimmed),
             abortSignal: request.signal,
