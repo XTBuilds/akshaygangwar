@@ -95,7 +95,7 @@ export function MahiruAssistant() {
             initial="hidden"
             animate="show"
             exit="exit"
-            className="fixed inset-x-3 bottom-40 z-40 flex max-h-[70vh] flex-col overflow-hidden holo-panel bg-background/85 sm:inset-x-auto sm:bottom-24 sm:right-6 sm:h-[600px] sm:max-h-[calc(100vh-8rem)] sm:w-[400px]"
+            className="fixed inset-x-3 bottom-24 z-50 flex max-h-[calc(100vh-9rem)] flex-col overflow-hidden holo-panel bg-background/90 sm:inset-x-auto sm:bottom-28 sm:right-6 sm:h-[600px] sm:max-h-[calc(100vh-10rem)] sm:w-[400px]"
           >
             <header className="flex items-center gap-3 border-b border-cyan/20 px-4 py-3">
               <img src={mahiruMark} alt="" width={512} height={512} className="h-9 w-9" loading="lazy" />
