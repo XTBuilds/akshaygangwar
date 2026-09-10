@@ -73,7 +73,7 @@ export function MahiruAssistant() {
         whileHover={{ scale: 1.06, y: -2 }}
         whileTap={press}
         transition={presets.ui}
-        className="fixed bottom-24 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full holo-panel !rounded-full border-cyan/50 sm:bottom-6 sm:right-24"
+        className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full holo-panel !rounded-full border-cyan/50 sm:bottom-8 sm:right-6"
       >
         {open ? (
           <X className="h-5 w-5 text-cyan" />
