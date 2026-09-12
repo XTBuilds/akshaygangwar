@@ -33,6 +33,25 @@ export const Route = createFileRoute("/api/chat")({
         if (!key) return new Response("AI is not configured", { status: 500 });
 
         const context = await getMahiruContext();
+
+        // Log the latest visitor question with a topic category.
+        try {
+          const last = [...(messages as UIMessage[])].reverse().find((m) => m.role === "user");
+          const text = (last?.parts ?? [])
+            .filter((p): p is { type: "text"; text: string } => p.type === "text")
+            .map((p) => p.text)
+            .join(" ")
+            .trim();
+          if (text) {
+            const { logMahiruQuestion } = await import("@/lib/analytics.server");
+            await logMahiruQuestion({
+              question: text,
+              page: request.headers.get("referer"),
+            });
+          }
+        } catch (e) {
+          console.error("question log failed", e);
+        }
         const initialRunId = getLovableAiGatewayRunId(request);
         const runIdFetch = createLovableAiGatewayRunIdFetch(initialRunId);
         const lovable = createOpenAI({
@@ -95,6 +114,11 @@ ${context}`;
                       message,
                     });
                     if (error) return { delivered: false as const, reason: error.message };
+                    const { logMahiruQuestion } = await import("@/lib/analytics.server");
+                    await logMahiruQuestion({
+                      question: `${name} <${email}>: ${message}`,
+                      kind: "message",
+                    });
                     const { notifyOwner } = await import("@/lib/notify.server");
                     await notifyOwner(
                       `XT via Mahiru — ${subject || name}`,

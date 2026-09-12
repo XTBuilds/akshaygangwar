@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { MahiruAssistant } from "@/components/MahiruAssistant";
 import { CustomCursor } from "@/components/motion/CustomCursor";
+import { VisitTracker } from "@/components/VisitTracker";
 
 function NotFoundComponent() {
   return (
@@ -132,6 +133,7 @@ function RootComponent() {
       <Outlet />
       <MahiruAssistant />
       <CustomCursor />
+      <VisitTracker />
     </QueryClientProvider>
   );
 }

@@ -10,20 +10,44 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as HireRouteImport } from './routes/hire'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
+import { Route as ApiPublicWeeklyDigestRouteImport } from './routes/api/public/weekly-digest'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HireRoute = HireRouteImport.update({
+  id: '/hire',
+  path: '/hire',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
@@ -40,44 +64,94 @@ const WorkSlugRoute = WorkSlugRouteImport.update({
   path: '/work/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWeeklyDigestRoute = ApiPublicWeeklyDigestRouteImport.update({
+  id: '/api/public/weekly-digest',
+  path: '/api/public/weekly-digest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/hire': typeof HireRoute
   '/projects': typeof ProjectsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/api/chat': typeof ApiChatRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/work/$slug': typeof WorkSlugRoute
+  '/api/public/weekly-digest': typeof ApiPublicWeeklyDigestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/hire': typeof HireRoute
   '/projects': typeof ProjectsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/api/chat': typeof ApiChatRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/work/$slug': typeof WorkSlugRoute
+  '/api/public/weekly-digest': typeof ApiPublicWeeklyDigestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/hire': typeof HireRoute
   '/projects': typeof ProjectsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/api/chat': typeof ApiChatRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/work/$slug': typeof WorkSlugRoute
+  '/api/public/weekly-digest': typeof ApiPublicWeeklyDigestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/projects' | '/api/chat' | '/blog/$slug' | '/work/$slug'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/hire'
+    | '/projects'
+    | '/dashboard'
+    | '/api/chat'
+    | '/blog/$slug'
+    | '/work/$slug'
+    | '/api/public/weekly-digest'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/projects' | '/api/chat' | '/blog/$slug' | '/work/$slug'
+  to:
+    | '/'
+    | '/auth'
+    | '/hire'
+    | '/projects'
+    | '/dashboard'
+    | '/api/chat'
+    | '/blog/$slug'
+    | '/work/$slug'
+    | '/api/public/weekly-digest'
   id:
-    '__root__' | '/' | '/projects' | '/api/chat' | '/blog/$slug' | '/work/$slug'
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/hire'
+    | '/projects'
+    | '/_authenticated/dashboard'
+    | '/api/chat'
+    | '/blog/$slug'
+    | '/work/$slug'
+    | '/api/public/weekly-digest'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  HireRoute: typeof HireRoute
   ProjectsRoute: typeof ProjectsRoute
   ApiChatRoute: typeof ApiChatRoute
   BlogSlugRoute: typeof BlogSlugRoute
   WorkSlugRoute: typeof WorkSlugRoute
+  ApiPublicWeeklyDigestRoute: typeof ApiPublicWeeklyDigestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -89,12 +163,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hire': {
+      id: '/hire'
+      path: '/hire'
+      fullPath: '/hire'
+      preLoaderRoute: typeof HireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects': {
       id: '/projects'
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/chat': {
       id: '/api/chat'
@@ -117,15 +219,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/weekly-digest': {
+      id: '/api/public/weekly-digest'
+      path: '/api/public/weekly-digest'
+      fullPath: '/api/public/weekly-digest'
+      preLoaderRoute: typeof ApiPublicWeeklyDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  HireRoute: HireRoute,
   ProjectsRoute: ProjectsRoute,
   ApiChatRoute: ApiChatRoute,
   BlogSlugRoute: BlogSlugRoute,
   WorkSlugRoute: WorkSlugRoute,
+  ApiPublicWeeklyDigestRoute: ApiPublicWeeklyDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
