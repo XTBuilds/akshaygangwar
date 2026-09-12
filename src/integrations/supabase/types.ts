@@ -149,6 +149,39 @@ export type Database = {
         }
         Relationships: []
       }
+      mahiru_logs: {
+        Row: {
+          answer_preview: string | null
+          category: string
+          created_at: string
+          id: string
+          kind: string
+          page: string | null
+          question: string
+          session_id: string | null
+        }
+        Insert: {
+          answer_preview?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          page?: string | null
+          question: string
+          session_id?: string | null
+        }
+        Update: {
+          answer_preview?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          page?: string | null
+          question?: string
+          session_id?: string | null
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           cover_url: string | null
@@ -191,6 +224,30 @@ export type Database = {
           sort_order?: number
           tech_stack?: string[]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      site_visits: {
+        Row: {
+          created_at: string
+          id: string
+          path: string
+          referrer: string | null
+          session_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string | null
         }
         Relationships: []
       }
