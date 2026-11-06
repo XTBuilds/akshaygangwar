@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   errorComponent: ({ error }) => (
     <div className="mx-auto max-w-md px-5 py-24 text-center">
       <h1 className="font-display text-2xl text-gradient">NO ACCESS</h1>
-      <p className="mt-3 text-sm text-muted-foreground">{error.message}</p>
+      <p className="mt-3 text-sm text-muted-foreground">{error instanceof Error ? error.message : "Access denied"}</p>
       <Link to="/" className="portal-link mt-6 inline-block">
         ← Back to XT CORE
       </Link>
