@@ -251,6 +251,192 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_audit_logs: {
+        Row: {
+          action: string
+          actor_id: number | null
+          actor_username: string | null
+          chat_id: number
+          created_at: string
+          details: Json
+          id: string
+          reason: string | null
+          target_user_id: number | null
+        }
+        Insert: {
+          action: string
+          actor_id?: number | null
+          actor_username?: string | null
+          chat_id: number
+          created_at?: string
+          details?: Json
+          id?: string
+          reason?: string | null
+          target_user_id?: number | null
+        }
+        Update: {
+          action?: string
+          actor_id?: number | null
+          actor_username?: string | null
+          chat_id?: number
+          created_at?: string
+          details?: Json
+          id?: string
+          reason?: string | null
+          target_user_id?: number | null
+        }
+        Relationships: []
+      }
+      telegram_group_settings: {
+        Row: {
+          antiflood_enabled: boolean
+          antispam_enabled: boolean
+          auto_mute_minutes: number
+          chat_id: number
+          command_permissions: Json
+          enabled: boolean
+          farewell_enabled: boolean
+          farewell_template: string
+          feature_flags: Json
+          flood_limit: number
+          flood_window_seconds: number
+          locked: boolean
+          locked_permissions: Json
+          logging_enabled: boolean
+          rules_text: string
+          updated_at: string
+          updated_by: number | null
+          warning_threshold: number
+          welcome_enabled: boolean
+          welcome_template: string
+        }
+        Insert: {
+          antiflood_enabled?: boolean
+          antispam_enabled?: boolean
+          auto_mute_minutes?: number
+          chat_id: number
+          command_permissions?: Json
+          enabled?: boolean
+          farewell_enabled?: boolean
+          farewell_template?: string
+          feature_flags?: Json
+          flood_limit?: number
+          flood_window_seconds?: number
+          locked?: boolean
+          locked_permissions?: Json
+          logging_enabled?: boolean
+          rules_text?: string
+          updated_at?: string
+          updated_by?: number | null
+          warning_threshold?: number
+          welcome_enabled?: boolean
+          welcome_template?: string
+        }
+        Update: {
+          antiflood_enabled?: boolean
+          antispam_enabled?: boolean
+          auto_mute_minutes?: number
+          chat_id?: number
+          command_permissions?: Json
+          enabled?: boolean
+          farewell_enabled?: boolean
+          farewell_template?: string
+          feature_flags?: Json
+          flood_limit?: number
+          flood_window_seconds?: number
+          locked?: boolean
+          locked_permissions?: Json
+          logging_enabled?: boolean
+          rules_text?: string
+          updated_at?: string
+          updated_by?: number | null
+          warning_threshold?: number
+          welcome_enabled?: boolean
+          welcome_template?: string
+        }
+        Relationships: []
+      }
+      telegram_keyword_filters: {
+        Row: {
+          chat_id: number
+          created_at: string
+          created_by: number
+          keyword: string
+        }
+        Insert: {
+          chat_id: number
+          created_at?: string
+          created_by: number
+          keyword: string
+        }
+        Update: {
+          chat_id?: number
+          created_at?: string
+          created_by?: number
+          keyword?: string
+        }
+        Relationships: []
+      }
+      telegram_message_activity: {
+        Row: {
+          chat_id: number
+          created_at: string
+          message_hash: string
+          user_id: number
+        }
+        Insert: {
+          chat_id: number
+          created_at?: string
+          message_hash: string
+          user_id: number
+        }
+        Update: {
+          chat_id?: number
+          created_at?: string
+          message_hash?: string
+          user_id?: number
+        }
+        Relationships: []
+      }
+      telegram_update_receipts: {
+        Row: {
+          received_at: string
+          update_id: number
+        }
+        Insert: {
+          received_at?: string
+          update_id: number
+        }
+        Update: {
+          received_at?: string
+          update_id?: number
+        }
+        Relationships: []
+      }
+      telegram_warnings: {
+        Row: {
+          chat_id: number
+          last_reason: string | null
+          updated_at: string
+          user_id: number
+          warning_count: number
+        }
+        Insert: {
+          chat_id: number
+          last_reason?: string | null
+          updated_at?: string
+          user_id: number
+          warning_count?: number
+        }
+        Update: {
+          chat_id?: number
+          last_reason?: string | null
+          updated_at?: string
+          user_id?: number
+          warning_count?: number
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
