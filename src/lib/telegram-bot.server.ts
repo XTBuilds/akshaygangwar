@@ -23,13 +23,7 @@ type TelegramUpdate = {
 };
 type BotSettings = Database["public"]["Tables"]["telegram_group_settings"]["Row"];
 
-const OWNER_ID = Number(process.env["TELEGRAM_OWNER_ID"] ?? 0);
-const GROUP_ID = Number(process.env["TELEGRAM_GROUP_ID"] ?? 0);
 const HTML_ESCAPE = /[&<>]/g;
-
-function escapeHtml(value: string) {
-  return value.replace(HTML_ESCAPE, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[char] ?? char);
-}
 
 function ownerId() {
   const id = Number(process.env["TELEGRAM_OWNER_ID"]);
@@ -507,6 +501,15 @@ export async function deleteTelegramFilter(keyword: string) {
   const { error } = await db.from("telegram_keyword_filters").delete().eq("chat_id", groupId()).eq("keyword", normalized);
   if (error) throw new Error("Could not remove keyword filter");
   await audit({ chatId: groupId(), action: "filter_removed_from_web", actor: { id: ownerId() }, reason: normalized });
+  return getTelegramDashboardData();
+}
+
+export async function addTelegramFilter(keyword: string) {
+  const db = await adminClient();
+  const normalized = keyword.trim().toLowerCase();
+  const { error } = await db.from("telegram_keyword_filters").upsert({ chat_id: groupId(), keyword: normalized, created_by: ownerId() });
+  if (error) throw new Error("Could not add keyword filter");
+  await audit({ chatId: groupId(), action: "filter_added_from_web", actor: { id: ownerId() }, reason: normalized });
   return getTelegramDashboardData();
 }
 

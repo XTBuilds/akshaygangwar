@@ -68,15 +68,20 @@ function DashboardPage() {
           <Link to="/" className="portal-link">
             ← Back to XT CORE
           </Link>
-          <button
-            className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate({ to: "/auth" });
-            }}
-          >
-            Sign out
-          </button>
+          <div className="flex items-center gap-5">
+            <Link to="/telegram" className="font-mono text-xs uppercase tracking-[0.2em] text-primary hover:text-foreground">
+              Telegram Bot
+            </Link>
+            <button
+              className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate({ to: "/auth" });
+              }}
+            >
+              Sign out
+            </button>
+          </div>
         </div>
 
         <h1 className="mt-8 font-display text-4xl text-gradient">CONTROL ROOM</h1>
