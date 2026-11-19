@@ -24,6 +24,7 @@ const settingsSchema = z.object({
   warning_threshold: z.number().int().min(1).max(10),
   auto_mute_minutes: z.number().int().min(1).max(10080),
   rules_text: z.string().trim().min(1).max(3500),
+  command_permissions: z.record(z.string().max(40), z.enum(["owner", "admins"])).refine((permissions) => Object.keys(permissions).length <= 20),
 });
 
 export const getTelegramControlRoom = createServerFn({ method: "GET" })

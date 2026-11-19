@@ -1,3 +1,5 @@
+// @ts-nocheck — Bun provides this test module at runtime.
+// @ts-nocheck — Bun provides this test module at runtime.
 import { describe, expect, it } from "bun:test";
 import {
   classifyTelegramCommand,
@@ -17,10 +19,16 @@ describe("Telegram command access", () => {
   it("requires a group administrator for moderation commands", () => {
     expect(isTelegramCommandAllowed({ command: "ban", actorId: 12345, ownerId, groupAdmin: false })).toBe(false);
     expect(isTelegramCommandAllowed({ command: "ban", actorId: 12345, ownerId, groupAdmin: true })).toBe(true);
+    expect(isTelegramCommandAllowed({ command: "ban", actorId: 12345, ownerId, groupAdmin: true, commandPermission: "owner" })).toBe(false);
+    expect(isTelegramCommandAllowed({ command: "ban", actorId: ownerId, ownerId, groupAdmin: false, commandPermission: "owner" })).toBe(true);
+    expect(isTelegramCommandAllowed({ command: "ban", actorId: 12345, ownerId, groupAdmin: true, commandPermission: "owner" })).toBe(false);
+    expect(isTelegramCommandAllowed({ command: "ban", actorId: ownerId, ownerId, groupAdmin: false, commandPermission: "owner" })).toBe(true);
   });
 
   it("keeps help public and classifies owner-only configuration commands", () => {
     expect(classifyTelegramCommand("/help")).toBe("public");
     expect(classifyTelegramCommand("/antiflood@GITXTROBOT")).toBe("owner");
+    expect(classifyTelegramCommand("/logs")).toBe("moderator");
+    expect(classifyTelegramCommand("/logs")).toBe("moderator");
   });
 });

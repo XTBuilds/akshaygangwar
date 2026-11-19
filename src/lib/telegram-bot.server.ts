@@ -1,5 +1,5 @@
 import type { Database } from "@/integrations/supabase/types";
-import { classifyTelegramCommand, isTelegramCommandAllowed } from "@/lib/telegram-access";
+import { isTelegramCommandAllowed } from "@/lib/telegram-access";
 
 type TelegramUser = { id: number; username?: string; first_name?: string; last_name?: string; is_bot?: boolean };
 type TelegramChat = { id: number; type: string; title?: string; username?: string };
@@ -104,6 +104,10 @@ async function audit(input: {
   reason?: string | null;
   details?: Record<string, unknown>;
 }) {
+  if (input.action.startsWith("member_")) {
+    const config = await ensureSettings(input.chatId);
+    if (!config.logging_enabled) return;
+  }
   const db = await adminClient();
   const { error } = await db.from("telegram_audit_logs").insert({
     chat_id: input.chatId,
@@ -112,7 +116,7 @@ async function audit(input: {
     action: input.action,
     target_user_id: input.targetId ?? null,
     reason: input.reason?.slice(0, 1000) ?? null,
-    details: input.details ?? {},
+    details: (input.details ?? {}) as unknown as Database["public"]["Tables"]["telegram_audit_logs"]["Insert"]["details"],
   });
   if (error) console.error("Telegram audit logging failed");
 }
@@ -227,7 +231,9 @@ async function processCommand(message: TelegramMessage, settings: BotSettings) {
   const chatId = message.chat.id;
   const actorIsOwner = actor.id === ownerId();
   const actorIsAdmin = chatId === groupId() && await isGroupAdmin(chatId, actor.id);
-  if (!isTelegramCommandAllowed({ command, actorId: actor.id, ownerId: ownerId(), groupAdmin: actorIsAdmin })) {
+  const commandPermissions = settings.command_permissions as Record<string, "owner" | "admins">;
+  const permissionOptions = commandPermissions[command] ? { commandPermission: commandPermissions[command] } : {};
+  if (!isTelegramCommandAllowed({ command, actorId: actor.id, ownerId: ownerId(), groupAdmin: actorIsAdmin, ...permissionOptions })) {
     await send(chatId, "This command is limited to the configured bot owner or group administrators.");
     await audit({ chatId, action: "command_denied", actor, details: { command } });
     return;
@@ -282,7 +288,8 @@ async function processCommand(message: TelegramMessage, settings: BotSettings) {
         const count = Math.max(1, Math.min(100, Number(args[0]) || 10));
         if (!reply) { await send(chatId, "Reply to the first message, then use /purge [count]."); break; }
         let deleted = 0;
-        for (let id = reply.message_id; id <= message.message_id && deleted < count; id++) {
+        const scanEnd = Math.min(message.message_id, reply.message_id + count - 1);
+        for (let id = reply.message_id; id <= scanEnd; id++) {
           try { await telegramApi("deleteMessage", { chat_id: chatId, message_id: id }); deleted++; } catch { /* Telegram limits deletion by age and eligibility. */ }
         }
         await audit({ chatId, action: "purge", actor, reason, details: { requested: count, deleted } });
@@ -401,7 +408,10 @@ async function processUpdate(update: TelegramUpdate) {
   const message = update.message ?? update.edited_message;
   if (!message || message.chat.id !== groupId() && message.chat.type !== "private") return;
   const dbSettings = await ensureSettings(groupId());
-  if (!dbSettings.enabled && message.chat.id === groupId()) return;
+  if (!dbSettings.enabled && message.chat.id === groupId()) {
+    const command = message.text?.trim().split(/\s+/)[0]?.replace(/^\//, "").split("@")[0]?.toLowerCase();
+    if (!command || !["start", "help", "status", "id", "settings"].includes(command)) return;
+  }
   if (message.new_chat_members && message.chat.id === groupId()) {
     for (const member of message.new_chat_members) {
       await audit({ chatId: groupId(), action: "member_join", actor: member, targetId: member.id });
@@ -487,6 +497,7 @@ export async function saveTelegramDashboardSettings(input: {
   warning_threshold: number;
   auto_mute_minutes: number;
   rules_text: string;
+  command_permissions: Record<string, "owner" | "admins">;
 }) {
   const db = await adminClient();
   const { error } = await db.from("telegram_group_settings").upsert({ chat_id: groupId(), ...input, updated_by: ownerId(), updated_at: new Date().toISOString() });
@@ -512,5 +523,3 @@ export async function addTelegramFilter(keyword: string) {
   await audit({ chatId: groupId(), action: "filter_added_from_web", actor: { id: ownerId() }, reason: normalized });
   return getTelegramDashboardData();
 }
-
-export { classifyTelegramCommand };

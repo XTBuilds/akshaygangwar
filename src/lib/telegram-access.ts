@@ -22,6 +22,7 @@ const MODERATOR_COMMANDS = new Set([
   "purge",
   "promote",
   "demote",
+  "logs",
   "lock",
   "unlock",
 ]);
@@ -42,9 +43,11 @@ export function isTelegramCommandAllowed(input: {
   actorId: number | null | undefined;
   ownerId: number;
   groupAdmin: boolean;
+  commandPermission?: "owner" | "admins";
 }) {
   const access = classifyTelegramCommand(input.command);
   if (access === "public") return true;
   if (access === "owner") return isConfiguredTelegramOwner(input.actorId, input.ownerId);
+  if (input.commandPermission === "owner") return isConfiguredTelegramOwner(input.actorId, input.ownerId);
   return input.groupAdmin || isConfiguredTelegramOwner(input.actorId, input.ownerId);
 }

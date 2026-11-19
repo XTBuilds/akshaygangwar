@@ -35,6 +35,22 @@ export const Route = createFileRoute("/_authenticated/telegram")({
 
 type ControlData = Awaited<ReturnType<typeof getTelegramControlRoom>>;
 type Settings = ControlData["settings"];
+type SettingsWrite = {
+  enabled: boolean;
+  welcome_enabled: boolean;
+  farewell_enabled: boolean;
+  logging_enabled: boolean;
+  antispam_enabled: boolean;
+  antiflood_enabled: boolean;
+  welcome_template: string;
+  farewell_template: string;
+  flood_limit: number;
+  flood_window_seconds: number;
+  warning_threshold: number;
+  auto_mute_minutes: number;
+  rules_text: string;
+  command_permissions: Record<string, "owner" | "admins">;
+};
 
 const toggleFields = [
   ["enabled", "Bot enabled", "Pause group bot commands and moderation."],
@@ -44,6 +60,8 @@ const toggleFields = [
   ["antispam_enabled", "Anti-spam", "Remove repeated messages and apply warning thresholds."],
   ["antiflood_enabled", "Anti-flood", "Detect rapid message bursts."],
 ] as const;
+
+const configurableCommands = ["ban", "unban", "kick", "mute", "unmute", "warn", "purge", "promote", "demote", "lock", "unlock", "logs"] as const;
 
 function TelegramControlRoom() {
   const queryClient = useQueryClient();
@@ -59,7 +77,7 @@ function TelegramControlRoom() {
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["telegram-control"] });
   const mutation = useMutation({
-    mutationFn: (values: Parameters<typeof save>[0]) => save(values),
+    mutationFn: (values: SettingsWrite) => save({ data: values }),
     onSuccess: async (data) => { setForm(data.settings); await refresh(); toast.success("Bot settings saved."); },
     onError: (error) => toast.error(error instanceof Error ? error.message : "Could not save settings."),
   });
@@ -106,6 +124,7 @@ function TelegramControlRoom() {
       warning_threshold: values.warning_threshold,
       auto_mute_minutes: values.auto_mute_minutes,
       rules_text: values.rules_text,
+      command_permissions: Object.fromEntries(configurableCommands.map((command) => [command, (values.command_permissions as Record<string, "owner" | "admins">)[command] ?? "admins"])) as Record<string, "owner" | "admins">,
     });
   };
 
@@ -151,6 +170,26 @@ function TelegramControlRoom() {
                 <div className="flex items-center gap-2 text-primary"><Shield size={17} /><span className="font-mono text-[10px] uppercase">MODERATION STATE</span></div>
                 <p className="mt-3 font-display text-xl">{values.enabled ? "ACTIVE" : "PAUSED"}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{data.warnings.length} recent warning records</p>
+              </div>
+
+              <div className="mt-8 border-t border-foreground/10 pt-6">
+                <h3 className="font-display text-lg">COMMAND ACCESS</h3>
+                <p className="mt-1 text-sm text-muted-foreground">Limit individual moderation commands to the configured owner, or allow group administrators.</p>
+                <div className="mt-4 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {configurableCommands.map((command) => {
+                    const permissions = values.command_permissions as Record<string, "owner" | "admins">;
+                    const level = permissions[command] ?? "admins";
+                    return (
+                      <label key={command} className="flex items-center justify-between gap-3 border-b border-foreground/10 py-2 font-mono text-xs uppercase">
+                        <span>/{command}</span>
+                        <select className="h-8 border border-input bg-background px-2 text-xs" aria-label={`Access for ${command}`} value={level} onChange={(event) => update("command_permissions", { ...permissions, [command]: event.target.value as "owner" | "admins" })}>
+                          <option value="admins">Group admins</option>
+                          <option value="owner">Owner only</option>
+                        </select>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             </section>
 
